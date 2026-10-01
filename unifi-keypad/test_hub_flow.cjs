@@ -34,7 +34,9 @@ function swipe(dx,dy=0,swipeTarget=target){
   assert.equal(requests.filter(r=>r.path.startsWith('/webhook/')).length,0,'Unlock never arms or disarms');
   swipe(-100);assert.equal(run('activeScreen'),'systems','No-camera sites skip Cameras');
   swipe(-100);assert.equal(run('activeScreen'),'audio','Audio follows Systems');
-  swipe(-100);assert.equal(run('activeScreen'),'audio','No wraparound');
+  swipe(-100);assert.equal(run('activeScreen'),'lighting','Lighting follows Audio');
+  swipe(-100);assert.equal(run('activeScreen'),'lighting','No wraparound');
+  swipe(100);assert.equal(run('activeScreen'),'audio');
   swipe(100);assert.equal(run('activeScreen'),'systems');
   for(const tab of ['network','wifi','power']){
     get('systems-tab-'+tab).onclick();

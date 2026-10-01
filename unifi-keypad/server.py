@@ -26,6 +26,7 @@ import network_actions
 import network_wifi
 import network_speedtest
 import sonos_audio
+import hue_lighting
 import protection_state
 import door_policy
 import arm_coverage
@@ -58,6 +59,7 @@ UNLOCKS = {}
 NETWORK_PLANS = {}
 NETWORK_SPEEDTESTS = network_speedtest.SpeedTests()
 SONOS_AUDIO = sonos_audio.AudioInventory()
+HUE_LIGHTING = hue_lighting.HueLighting(STATE_DIR / '.lighting-hue.json')
 ARM_PLANS = {}
 STATUS_SENSORS = []
 SIREN_MESSAGE = ''
@@ -167,6 +169,44 @@ def hub_audio_control(data, grouping=False):
     action = SONOS_AUDIO.group if grouping else SONOS_AUDIO.control
     result = action({key: val for key, val in data.items() if key != 'unlock'}, authorize)
     authorize()
+    return result
+
+
+def hub_lighting(data, action='read'):
+    manage = action in ('discover', 'prepare', 'pair', 'disconnect')
+    with LOCK:
+        actor = unlocked_user(data.get('unlock'))
+        if manage and actor['role'] != 'admin':
+            raise ValueError('Unlock with an administrator PIN to connect lighting.')
+
+    def authorize():
+        with LOCK:
+            current = unlocked_user(data.get('unlock'))
+            if current['id'] != actor['id'] or (manage and current['role'] != 'admin'):
+                raise ValueError('Unlock with your PIN again.')
+
+    # Bridge reads and writes never hold the alarm controller lock or renew a PIN.
+    if action == 'read':
+        result = HUE_LIGHTING.read(authorize)
+    elif action == 'discover':
+        try:
+            result = {'bridges': hue_lighting.discover()}
+        except OSError:
+            raise ValueError('Could not search the network. Enter the Hue Bridge address instead.') from None
+    elif action == 'prepare':
+        result = HUE_LIGHTING.prepare(data.get('host'), data.get('unlock'), authorize)
+    elif action == 'pair':
+        result = HUE_LIGHTING.pair(data.get('pairId'), data.get('unlock'), authorize)
+    elif action == 'disconnect':
+        if data.get('confirm') is not True:
+            raise ValueError('Confirm disconnecting this Hue Bridge.')
+        result = HUE_LIGHTING.disconnect(authorize)
+    elif action == 'control':
+        result = HUE_LIGHTING.control({k: v for k, v in data.items() if k != 'unlock'}, authorize)
+    else:
+        raise ValueError('Unsupported lighting action.')
+    authorize()
+    result['canManage'] = actor['role'] == 'admin'
     return result
 
 
@@ -942,6 +982,8 @@ class Handler(BaseHTTPRequestHandler):
         files['/management.js'] = ('management.js', 'text/javascript')
         files['/astra.css'] = ('astra.css', 'text/css')
         files['/audio.js'] = ('audio.js', 'text/javascript')
+        files['/lighting.js'] = ('lighting.js', 'text/javascript')
+        files['/lighting.css'] = ('lighting.css', 'text/css')
         files.update({'/onboarding': ('setup_lab.html', 'text/html; charset=utf-8'), '/setup.js': ('setup_lab.js', 'text/javascript'), '/setup.css': ('setup_lab.css', 'text/css')})
         files.update({'/lab': ('lab.html', 'text/html; charset=utf-8'), '/lab.js': ('lab.js', 'text/javascript')})
         if self.path in files:
@@ -1014,6 +1056,11 @@ class Handler(BaseHTTPRequestHandler):
                 return self.reply(200, hub_audio_control(data))
             if self.path == '/hub/audio/group':
                 return self.reply(200, hub_audio_control(data, grouping=True))
+            if self.path == '/hub/lighting':
+                return self.reply(200, hub_lighting(data))
+            if self.path in ('/hub/lighting/control', '/hub/lighting/discover', '/hub/lighting/prepare',
+                             '/hub/lighting/pair', '/hub/lighting/disconnect'):
+                return self.reply(200, hub_lighting(data, self.path.rsplit('/', 1)[-1]))
             if self.path == '/hub/wifi/reveal':
                 return self.reply(200, reveal_wifi_passwords(data))
             if self.path == '/hub/network/speedtest/status':

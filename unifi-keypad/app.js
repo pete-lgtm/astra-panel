@@ -10,8 +10,8 @@ let armReview = null, armReviewGeneration = 0, armReviewMode = 'arm';
 let settingsOnUnlock=false, settingsOpen=false, settingsIdleTimer, settingsExpiryTimer, pinConfigured=null, settingsGeneration=0;
 let settingsTarget='overview';
 let localConnection = null, apiConnectionMissing = false;
-const hubScreens = ['home','cameras','systems','audio'];
-const hubLabels = {home:'Alarm',cameras:'Cameras',systems:'Systems',audio:'Audio'};
+const hubScreens = ['home','cameras','systems','audio','lighting'];
+const hubLabels = {home:'Alarm',cameras:'Cameras',systems:'Systems',audio:'Audio',lighting:'Lighting'};
 let hubCameras = [], swipeStart = null;
 let lockSwipe = null;
 let networkInventory = null, networkLoading = false, networkGeneration = 0, selectedNetworkSite = null;
@@ -48,6 +48,7 @@ async function call(path, body = {}) {
     }
     return data;
   } catch(error) {
+    if(error.name==='AbortError'&&path.startsWith('/hub/lighting'))throw new Error(path.endsWith('/control')?'The lighting result is unknown. Refresh before trying again.':'Hue did not respond. Check the bridge and try again.');
     if(error.name==='AbortError'&&path.startsWith('/hub/audio'))throw new Error(['/hub/audio/control','/hub/audio/group'].includes(path)?'The Sonos result is unknown. Refresh before trying again.':'Sonos did not respond. Tap Find rooms to try again.');
     if(error.name==='AbortError') throw new Error(path==='/hub/network/apply' ? 'The result is unknown. Check this equipment in UniFi before trying again.' : path.startsWith('/webhook/') ? 'The request timed out; its result is unknown. Check Protect before trying again.' : 'The connection timed out. Try reconnecting to UniFi.');
     throw error;
@@ -66,8 +67,9 @@ function show(screen) {
   for (const id of ['sleep','pin-screen',...hubScreens,'setup-screen','setup-success']) el(id).hidden = id !== screen;
   renderPresentation();
   if(typeof syncAudioScreen==='function')syncAudioScreen();
+  if(typeof syncLightingScreen==='function')syncLightingScreen();
 }
-function availableHubPages() { return ['home',...(hubCameras.length ? ['cameras'] : []),'systems','audio']; }
+function availableHubPages() { return ['home',...(hubCameras.length ? ['cameras'] : []),'systems','audio','lighting']; }
 function renderHubNavigation() {
   const pages=availableHubPages(), index=pages.indexOf(activeScreen), unlocked=!!unlockToken && index>=0;
   el('hub-navigation').hidden=!unlocked;
@@ -84,6 +86,7 @@ function moveHub(direction) {
 }
 function clearHub() {
   if(typeof clearAudioHub==='function')clearAudioHub();
+  if(typeof clearLightingHub==='function')clearLightingHub();
   closeEquipmentAction();
   clearTimeout(equipmentNoticeTimer);equipmentNotice=null;
   closeWifiPasswords();
@@ -1103,6 +1106,7 @@ function renderPresentation() {
   el('disarm').disabled = busy || !status?.webhookReady || !unlockToken || confirmedDisarmed();
   el('wake').disabled = el('strip-cancel').disabled = busy;
   const counting = ['exit','entry'].includes(view.mode), urgent = counting || view.mode === 'breach';
+  if(urgent && typeof closeLightingSetup==='function' && el('lighting-setup').open)closeLightingSetup();
   const armed = ['armed','breached'].includes(view.state) || ['entry','breach'].includes(view.mode);
   const labels = {disarmed:'Disarmed',armed:'Armed',exit:'Arming',entry:'Entry delay',breach:'THERE HAS BEEN A BREACH',unknown:'Status unverified'};
   text('state', labels[view.mode] || 'Status unverified');

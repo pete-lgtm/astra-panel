@@ -44,6 +44,35 @@ certificate and hostname are configured. The main server remains on loopback.
 Only one controller should manage a site. Use a separate bench console when
 developing changes while an installed panel is running.
 
+## Philips Hue lighting
+
+Unlock the panel and tap the lightbulb in the bottom toolbar. An administrator
+PIN can connect a bridge: choose **Connect Hue**, select the bridge discovered
+on your LAN (or enter its private IPv4 address), press the physical button on
+the Hue Bridge, and tap **Connect** within its pairing window.
+
+Use a Hue Bridge with the v2 API (the square BSB002 bridge or a compatible newer
+bridge); the older round BSB001 bridge is not supported. Add and organize lights,
+rooms, zones and scenes in the Hue app, then refresh Lighting in Astra. Any valid
+panel PIN can switch lights/rooms, adjust supported brightness, and recall saved
+scenes. Color selection and scene editing remain in the Hue app.
+
+All control is local HTTPS. The first bridge certificate is trusted when you
+select it and pinned for pairing and subsequent requests. Pair on a trusted LAN.
+A changed certificate or rejected key requires reconnecting. The application key
+and certificate pin live in owner-only `.lighting-hue.json` in the state directory;
+they survive panel restarts and are never returned to the browser or packaged
+with releases. Disconnect removes Astra's local connection; it does not revoke
+the bridge's application authorization. That can be removed in Hue separately.
+
+Failed reads disable stale controls. Writes are never automatically retried;
+Astra reads the bridge again after each request. Lighting does not need UniFi
+sign-in and bridge network operations do not hold the alarm controller lock.
+
+Only Philips Hue is currently implemented. **Lutron is the only other planned
+lighting integration**; its connection method will depend on the installed
+processor. There is no generic third-party lighting connector.
+
 ## Stored state and access
 
 The API key and console-issued session are stored separately in owner-only
