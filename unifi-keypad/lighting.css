@@ -1,0 +1,57 @@
+body[data-screen="lighting"] main>footer{display:none}
+body[data-screen="lighting"] #hub-navigation{padding:0;margin-top:6px}
+body[data-screen] #lighting{min-height:0;width:100%;max-width:none;padding:0;overflow:hidden;gap:8px;justify-content:flex-start;align-items:stretch;text-align:left}
+.lighting-toolbar,.lighting-toolbar>div,.lighting-toolbar-actions{display:flex;align-items:center;gap:12px}
+.lighting-toolbar{justify-content:space-between;min-height:44px;flex:none}
+.lighting-toolbar h1{font-size:26px;letter-spacing:-.7px;margin:0}
+#lighting-summary{font-size:12px;color:#c4d8e5}
+.lighting-toolbar-actions{gap:6px}
+body[data-screen] .lighting-toolbar button{min-height:44px;padding:8px 12px;font-size:12px;margin:0}
+#lighting-notice{font-size:12px;line-height:1.3;color:#ffe0a7;margin:0;flex:none}
+.lighting-layout{display:grid;grid-template-columns:150px minmax(0,1fr);gap:10px;min-height:0;flex:1;overflow:hidden}
+.lighting-sidebar,.lighting-content{display:flex;flex-direction:column;min-height:0;min-width:0;gap:8px}
+.lighting-rooms{display:flex;flex-direction:column;gap:6px;min-height:0;flex:1;overflow-y:auto;overscroll-behavior:contain;padding:1px 3px 1px 1px}
+body[data-screen] .lighting-room{flex:none;text-align:left;border:1px solid #ffffff20;background:#ffffff09;border-radius:14px;min-height:44px;padding:10px 12px;font-size:13px;font-weight:600;margin:0;box-shadow:none;color:#dce7f4;overflow-wrap:anywhere}
+body[data-screen] .lighting-room[aria-pressed="true"]{background:#ffe6ae22;border-color:#ffe6ae66;color:#ffedc5}
+.lighting-room-controls{display:grid;grid-template-columns:1fr 1fr;gap:6px;flex:none}
+body[data-screen] .lighting-room-controls button{min-height:44px;font-size:11px;padding:6px;border-radius:12px;background:#ffffff0c;border:1px solid #ffffff25;color:#dfebf8;box-shadow:none}
+.lighting-lights{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-content:start;gap:8px;min-height:0;flex:1;overflow-y:auto;overscroll-behavior:contain;padding:1px 3px 1px 1px}
+.lighting-card{padding:8px 12px;border:1px solid #ffffff25;border-radius:18px;background:linear-gradient(145deg,#ffffff0e,#ffffff05);min-width:0;min-height:104px;box-sizing:border-box}
+.lighting-card[data-on="true"]{background:radial-gradient(ellipse at 0 0,#ffe5a82b,transparent 85%),#ffffff09;border-color:#ffe5a84a}
+.lighting-card-head{display:flex;align-items:center;gap:8px;justify-content:space-between;min-height:40px}
+.lighting-card-copy{display:flex;flex-direction:column;gap:3px;min-width:0}
+.lighting-card strong{font-size:13px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lighting-card small{font-size:10px;color:#b9cbdc}
+body[data-screen] .lighting-toggle{min-height:44px;min-width:48px;padding:6px;border-radius:14px;margin:0;font-size:12px;background:#ffffff13;border:1px solid #ffffff25;color:#deebf8;box-shadow:none;flex:none}
+body[data-screen] .lighting-toggle[aria-pressed="true"]{background:#ffe3a8;color:#372914;border-color:#ffedc5}
+.lighting-level{display:grid;grid-template-columns:minmax(0,1fr) 32px;gap:6px;align-items:center;height:42px}
+.lighting-level output{font-size:11px;color:#e0e8ef;text-align:right;font-variant-numeric:tabular-nums}
+.lighting-level input{appearance:none;-webkit-appearance:none;min-width:0;width:100%;height:42px;margin:0;padding:0;border:0;background:transparent;box-shadow:none;touch-action:none;accent-color:#ffe3a8}
+.lighting-level input::-webkit-slider-runnable-track{height:5px;background:#ffe3a835;border-radius:5px}
+.lighting-level input::-webkit-slider-thumb{appearance:none;-webkit-appearance:none;width:22px;height:22px;margin-top:-8.5px;border-radius:50%;background:#ffe3a8}
+.lighting-scenes{display:flex;gap:6px;overflow-x:auto;overscroll-behavior:contain;flex:none;min-height:44px;padding-bottom:2px}
+body[data-screen] .lighting-scene{flex:none;min-height:44px;max-width:190px;padding:8px 14px;border-radius:14px;border:1px solid #d1c2ff44;background:#c2acff15;color:#ede5ff;font-size:12px;box-shadow:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#lighting button:disabled,.lighting-level input:disabled{opacity:.4}
+.lighting-empty{min-height:0;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:10px;padding:10px}
+.lighting-empty>span{font-size:36px;color:#ffe3a8;line-height:1}
+.lighting-empty h2{font-size:23px;margin:0}.lighting-empty p{font-size:14px;line-height:1.4;max-width:410px;margin:0;color:#c6d5e5}
+.lighting-empty small{font-size:11px;color:#aebed1}.lighting-empty button{min-height:44px}
+.lighting-setup[open]{display:flex;flex-direction:column;gap:10px;width:min(600px,calc(100vw - 24px));max-height:calc(100dvh - 24px);margin:auto;padding:18px;box-sizing:border-box;overflow:hidden;text-align:left}
+.lighting-setup-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;flex:none}
+.lighting-setup h2{margin:0;font-size:24px}
+body[data-screen] #lighting-setup-close{min-width:44px;min-height:44px;margin:0;padding:0;border-radius:50%;font-size:23px;flex:none}
+#lighting-setup-help,#lighting-setup-message{font-size:14px;line-height:1.4;margin:0;flex:none}
+#lighting-setup-message{color:#ffe0a7;font-size:12px}
+.lighting-setup-body{min-height:0;overflow-y:auto;overscroll-behavior:contain}
+#lighting-bridges{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+body[data-screen] .lighting-bridge{display:flex;flex-direction:column;gap:4px;text-align:left;padding:10px 12px;min-height:56px;border-radius:15px;background:#ffffff0d;border:1px solid #ffffff30;color:#e7eff9;margin:0;font-size:13px;box-shadow:none}
+.lighting-bridge span{font-size:11px;color:#bdcde1}
+#lighting-address-form{margin:12px 0 0}#lighting-address-form label{font-size:12px;margin:0 0 5px}
+#lighting-address-form>div:not(.lighting-ip-pad){display:flex;gap:8px}#lighting-address{min-width:0;flex:1;padding:8px 12px;min-height:44px;margin:0;font-size:16px}
+.lighting-setup-footer{display:flex;justify-content:flex-end;gap:8px;flex:none}
+body[data-screen] .lighting-setup-footer button{min-height:44px;width:auto;margin:0;padding:8px 16px;font-size:13px}
+body[data-screen] #lighting-pair{min-width:130px}
+@media(max-width:580px){.lighting-layout{grid-template-columns:120px minmax(0,1fr)}.lighting-lights{grid-template-columns:1fr}.lighting-toolbar h1{font-size:23px}.lighting-toolbar>div{gap:6px}#lighting-summary{font-size:10px}.lighting-toolbar-actions{gap:4px}body[data-screen] .lighting-toolbar button{padding:8px;font-size:11px}}
+
+.lighting-ip-pad{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;margin-top:8px}
+body[data-screen] .lighting-ip-pad button{min-height:44px;padding:4px;margin:0;font-size:18px;border-radius:10px;background:#ffffff12;border:1px solid #ffffff30;color:#e7eff9;box-shadow:none}

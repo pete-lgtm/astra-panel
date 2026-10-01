@@ -3,7 +3,7 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
 const html=fs.readFileSync('index.html','utf8'),nodes=new Map();
 const make=()=>({value:'',textContent:'',hidden:false,dataset:{},children:[],style:{setProperty(){}},
-  classList:{toggle(){}},querySelectorAll(){return []},setAttribute(k,v){this[k]=v},
+  classList:{toggle(){}},querySelectorAll(){return []},setAttribute(k,v){this[k]=v},removeAttribute(k){delete this[k]},
   append(...items){this.children.push(...items)},replaceChildren(...items){this.children=items},
   addEventListener(){},focus(){},showModal(){this.open=true},close(){this.open=false}});
 for(const match of html.matchAll(/<[^>]+\bid="([^"]+)"[^>]*>/g)){
@@ -14,7 +14,7 @@ const body=make(),ctx=vm.createContext({document:{body,getElementById:id=>nodes.
   createElement:make,addEventListener(){},querySelectorAll(){return []}},Date,Math,performance:{now:()=>1000},
   fetch:()=>new Promise(()=>{}),setInterval(){},setTimeout(){},clearTimeout(){}});
 const run=source=>vm.runInContext(source,ctx);
-for(const file of ['app.js','management.js'])vm.runInContext(fs.readFileSync(file,'utf8'),ctx,{filename:file});
+for(const file of ['app.js','management.js','audio.js','lighting.js'])vm.runInContext(fs.readFileSync(file,'utf8'),ctx,{filename:file});
 assert.equal(body.dataset.screen,'sleep','Startup must reach the fixed lock-screen layout');
 assert.ok(nodes.get('clock').textContent,'The clock must start without waiting for a connection');
 assert.ok(nodes.get('date').textContent);
