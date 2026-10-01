@@ -1,0 +1,911 @@
+:root{font-family:Inter,ui-sans-serif,system-ui,-apple-system,sans-serif;color:#edf4f8;background:#080d14;color-scheme:dark}*{box-sizing:border-box}body{margin:0;min-height:100dvh;display:grid;place-items:center;background:radial-gradient(ellipse at 20% 0%,#1c3043 0,transparent 65%),#080d14}main{width:min(100%,720px);min-height:min(900px,100dvh);padding:30px 38px;display:flex;flex-direction:column}header{display:flex;align-items:center;justify-content:space-between}.brand{font-size:19px;letter-spacing:4px;font-weight:750}.brand span{display:block;font-size:9px;letter-spacing:2.2px;color:#8ca1b6;margin-top:7px}button,input{font:inherit}button{cursor:pointer;border:0;color:inherit;touch-action:manipulation}button:disabled{opacity:.4;cursor:not-allowed}.quiet{background:#ffffff0a;border:1px solid #ffffff26;padding:14px 20px;color:#d3dee9;border-radius:14px;font-size:16px;min-height:50px}#settings{font-size:25px}.screen{flex:1;text-align:center;padding:50px 0 24px;display:flex;align-items:center;justify-content:center;flex-direction:column;min-height:570px}.screen[hidden]{display:none}.clock{font-weight:250;font-size:clamp(65px,13vw,104px);letter-spacing:-5px;font-variant-numeric:tabular-nums}#date{color:#9db0c3;font-size:19px;margin-top:6px}.wake{margin:55px 0;background:#ffffff0b;border:1px solid #ffffff19;border-radius:40px;padding:20px 32px;font-size:18px}.wake span{margin-left:26px;color:#80c5ff}.bottom-note,.eyebrow{font-size:11px;letter-spacing:2.3px;color:#9db0c3}.bottom-note{margin-top:25px}h1{font-size:36px;font-weight:500;letter-spacing:-1px;margin:16px 0}.sub{color:#a8bdce;line-height:1.6;margin:0 0 25px}.small{font-size:12px;margin:16px 0}.shield{font-size:80px;line-height:1.3;color:#9aaec3;margin-top:28px}.command-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;width:100%;margin:22px 0}.command{border:1px solid #ffffff1d;border-radius:24px;min-height:145px;font-size:25px;font-weight:550}.command span{display:block;font-size:30px;margin-bottom:12px}.arm{background:#286aaf}.disarm{background:#21354a}.disarm-span{grid-column:1/-1;min-height:104px}.primary{background:#74b8f2;color:#071726;border-radius:16px;padding:18px;font-weight:650;width:100%;min-height:56px}.number-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0}.number-pad button{background:#ffffff08;border:1px solid #ffffff0b;border-radius:16px;min-height:60px;font-size:24px}.number-pad button:nth-child(10){font-size:15px}form{width:100%;max-width:350px}input{color:inherit;background:#080f18;border:1px solid #34495c;border-radius:14px;padding:16px;width:100%;margin:9px 0}#pin{text-align:center;letter-spacing:12px;font-size:24px;height:58px}label{text-align:left;display:block;font-size:14px;color:#a9bbcb;margin:14px 0}#setup-screen{padding-top:15px}.back{align-self:flex-start}#message{text-align:center;font-size:14px;line-height:1.5;color:#e8c991;min-height:42px;margin:8px 0}footer{display:flex;align-items:center;gap:8px;font-size:9px;letter-spacing:1.7px;color:#8194a8}footer>span:last-child{margin-left:auto}#connection-dot{color:#cba76a}.online{color:#72c7af!important}button:focus-visible,input:focus-visible{outline:3px solid #adcfee;outline-offset:3px}button:active{transform:scale(.98)}@media(max-width:450px){main{padding:22px}.screen{min-height:520px;padding-top:24px}h1{font-size:30px}.command{min-height:125px}.number-pad button{min-height:55px}}@media(max-height:650px) and (min-width:600px){main{min-height:100dvh;width:900px}.screen{min-height:330px;padding:12px}.clock{font-size:70px}.wake{margin:20px}.number-pad{gap:5px}.number-pad button{min-height:38px}.shield{display:none}#pin-screen{padding:0}#pin-screen h1,#pin-screen .sub,#pin-screen .eyebrow{display:none}footer{margin-top:8px}}
+
+#sleep .wake{margin:26px 0 0;min-width:240px}.quick-arm{background:#244766;border-color:#497799;margin-top:14px!important}#exit-countdown{color:#e9c88e;font-size:19px;margin:25px 0 0}
+
+#local-login-details{max-width:350px;width:100%;text-align:left;border-top:1px solid #34495c;margin-top:24px;padding:20px 0}summary{cursor:pointer;font-size:18px}#local-result{white-space:pre-line}
+
+#local-login-details{border-top:0;margin-top:0;padding-top:0}#local-login-details h2{font-size:19px;font-weight:500}#advanced-api{width:100%;max-width:350px;text-align:left;border-top:1px solid #34495c;padding:20px 0;margin-top:16px}#advanced-api summary{font-size:14px;color:#96a9bb}
+
+[hidden]{display:none!important}
+.connection-alert{display:flex;align-items:center;gap:16px;margin-top:24px;padding:17px 18px;background:#d3aa6510;border:1px solid #d3aa6538;border-radius:16px;color:#efd3a5;font-size:13px;line-height:1.5}.connection-alert strong{font-weight:600}.connection-alert p{margin:5px 0 0;color:#c9b89d;font-size:12px}.connection-alert button{flex:none;padding:13px 15px;min-height:46px;border-radius:12px;background:#ebd1a6;color:#2f2618;font-weight:650;font-size:12px}@media(max-width:520px){.connection-alert{align-items:stretch;flex-direction:column;gap:12px}.connection-alert button{align-self:flex-start}.connection-alert:not([hidden])~#sleep .clock{font-size:68px}}
+
+.success-check{display:grid;place-items:center;width:88px;height:88px;border-radius:50%;background:#72c7af18;color:#72c7af;font-size:48px;margin-bottom:28px}.success-continue{max-width:350px;margin-top:16px}#setup-success-title:focus{outline:none}
+
+/* Alarm presentation: the background follows confirmed state, not button presses. */
+body{isolation:isolate;--accent:#8cc8fa;--muted:#aabfd2}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(ellipse at 18% 0%,#572b37 0,transparent 68%),radial-gradient(ellipse at 100% 85%,#281218 0,transparent 70%),#120b10;opacity:0;transition:opacity .65s ease}
+body[data-tone="red"]{--accent:#f1b4ba;--muted:#c7a8b2}
+body[data-tone="red"]::before{opacity:1}
+body[data-tone="red"] .brand span,body[data-tone="red"] .sub,body[data-tone="red"] .bottom-note,body[data-tone="red"] .eyebrow,body[data-tone="red"] #date,body[data-tone="red"] .quiet{color:var(--muted)}
+#standby-display{min-height:310px;display:flex;flex-direction:column;justify-content:center;align-items:center}
+#standby-status{display:flex;align-items:center;gap:9px;margin:18px 0 0;letter-spacing:1.2px;font-size:14px;color:var(--accent)}
+#standby-lock{width:21px;height:21px}
+#sleep .wake{display:inline-flex;align-items:center;justify-content:center;gap:30px;min-width:254px;min-height:60px;margin:20px 0 0;padding:17px 27px;transition:background .2s,border-color .2s}
+.wake span{margin:0;color:inherit}.wake .wake-arrow{color:var(--accent)}
+#sleep .quick-arm{margin-top:12px!important;background:#24476678;border-color:#638eb540}
+.lock-icon{display:inline-flex;align-items:center;justify-content:center;width:25px;height:25px;color:var(--accent)}
+.lock-icon svg{width:100%;height:100%;display:block}
+.command .lock-icon{display:block;width:32px;height:32px;margin:0 auto 14px}
+.command>span:not(.lock-icon){font-size:24px;margin:0}
+#home-lock{width:70px;height:70px;margin:24px 0 12px}
+body[data-tone="red"] #quick-arm{background:#713d4940;border-color:#dc8e9e36}
+body[data-alarm-mode="armed"] #quick-arm:disabled,body[data-alarm-mode="entry"] #quick-arm:disabled{opacity:1;color:#edc8cf}
+body[data-tone="red"] .disarm,body[data-tone="red"] .primary{background:#edced3;color:#30171e}
+body[data-tone="red"] .disarm .lock-icon{color:#683e49}
+body[data-tone="red"] #wake{background:#f9cdd112;border-color:#edb9c02e}
+.alarm-display{min-height:310px;display:flex;align-items:center;justify-content:center;flex-direction:column;width:100%}
+.alarm-display .eyebrow{color:var(--accent);margin:0 0 18px;font-weight:650;letter-spacing:3.2px;font-size:12px}
+.countdown-face{width:clamp(230px,55vw,290px);aspect-ratio:1;position:relative;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;margin:0 auto}
+.countdown-ring{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+.ring-track,.ring-progress{fill:none;stroke-width:2;stroke:#ffffff12}
+.ring-progress{stroke:var(--accent);stroke-linecap:round;transition:stroke-dashoffset .25s linear}
+.countdown-value{font-size:clamp(76px,16vw,108px);font-weight:270;letter-spacing:-5px;font-variant-numeric:tabular-nums;line-height:1;color:#fff1f3}
+.countdown-unit{font-size:10px;letter-spacing:3px;color:var(--muted)}
+.alarm-detail{color:var(--muted);font-size:15px;line-height:1.6;max-width:300px;margin:21px auto 4px}
+body[data-alarm-mode="exit"] .alarm-display{--accent:#e9ca91}
+body[data-alarm-mode="exit"] .countdown-value{color:#f5efdf}
+.breach-symbol{height:64px;width:64px;border:1px solid #f8c9d064;border-radius:50%;display:grid;place-items:center;font-size:40px;font-weight:300;color:#ffd9df;margin:4px auto 22px;background:#d88c9810}
+.breach-display h1{font-size:clamp(31px,7vw,48px);line-height:1.14;letter-spacing:-.8px;font-weight:650;color:#fff1f3;margin:0;text-wrap:balance}
+body[data-alarm-mode="breach"] #wake{background:#edced3;color:#30171e;border-color:transparent;font-weight:650;margin-top:32px}
+body[data-alarm-mode="breach"] #wake .wake-arrow{color:#713744}
+body[data-alarm-mode="breach"] .command-grid{grid-template-columns:1fr;max-width:380px}
+body[data-alarm-mode="breach"] #state{font-size:clamp(28px,6vw,40px);font-weight:650;max-width:410px;line-height:1.15;text-wrap:balance}
+.alert-strip{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:12px 18px;border:1px solid #ffffff1a;border-radius:14px;background:#ffffff06;color:var(--accent);font-size:13px;margin:25px 0 0}
+.alert-strip strong{font-size:24px;letter-spacing:-1px;font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap}
+#entry-observation{text-align:center;align-self:center;max-width:470px;font-size:11px;line-height:1.6}
+#message:empty{min-height:0;margin:0}
+footer{margin-top:18px}
+.sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+@media(max-width:450px){#standby-display{min-height:265px}.alarm-display{min-height:300px}.countdown-face{width:240px}.alarm-detail{font-size:14px}.screen{min-height:570px}#sleep .wake{font-size:16px;min-height:55px;min-width:238px}.breach-symbol{width:58px;height:58px}.bottom-note{font-size:9px}}
+@media(max-height:650px) and (min-width:600px){main{padding:18px 30px}#sleep{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr auto auto 1fr;gap:0 28px;min-height:300px}#standby-display,#alarm-display{grid-column:1;grid-row:1 / -1;min-height:270px}#sleep #wake{grid-column:2;grid-row:2;margin:0!important}#sleep #quick-arm{grid-column:2;grid-row:3}#sleep .bottom-note{grid-column:2;grid-row:4;align-self:start}.countdown-face{width:190px}.countdown-value{font-size:74px}.alarm-display .eyebrow{margin-bottom:7px}.alarm-detail{font-size:12px;margin:10px auto}.breach-display h1{font-size:32px}.breach-symbol{height:44px;width:44px;font-size:28px;margin-bottom:14px}.alert-strip{margin-top:12px;padding:7px 14px}.alert-strip strong{font-size:20px}#pin-screen{min-height:285px}.screen{min-height:285px}.command{min-height:105px}#home-lock{display:none}}
+@media(prefers-reduced-motion:reduce){body::before,.ring-progress,.wake{transition:none}}
+
+/* Keep the stop action prominent throughout both countdowns. */
+body:is([data-alarm-mode="exit"],[data-alarm-mode="entry"]) #wake{background:#c8e5fc;color:#142d42;border-color:transparent;font-weight:650}
+body:is([data-alarm-mode="armed"],[data-alarm-mode="entry"]) #wake{background:#edced3;color:#30171e;border-color:transparent;font-weight:650}
+body:is([data-alarm-mode="armed"],[data-alarm-mode="exit"],[data-alarm-mode="entry"]) #wake .wake-arrow{color:inherit}
+body:is([data-alarm-mode="armed"],[data-alarm-mode="exit"],[data-alarm-mode="entry"]) .command-grid{grid-template-columns:1fr;max-width:380px}
+body:is([data-alarm-mode="exit"],[data-alarm-mode="entry"]) #sleep{min-height:0;padding-top:24px}
+.strip-cancel{background:#d5e7f2;color:#142d42;border-radius:10px;padding:12px 16px;font-weight:650;white-space:nowrap;min-height:44px}
+body[data-tone="red"] .strip-cancel{background:#edced3;color:#30171e}
+.alert-strip strong{margin-left:auto}
+@media(max-width:450px){.alert-strip{gap:10px;padding:10px;font-size:12px}.strip-cancel{padding:10px;font-size:12px}}
+@media(max-height:760px){body:is([data-alarm-mode="exit"],[data-alarm-mode="entry"]) #pin-screen{min-height:0;padding:16px 0}body:is([data-alarm-mode="exit"],[data-alarm-mode="entry"]) #pin-screen .eyebrow{display:none}#pin-screen .number-pad button{min-height:48px}#pin-screen h1{margin:8px 0}#pin-screen .sub{margin-bottom:8px}.alert-strip{margin-top:12px}}
+body[data-screen="setup-screen"] main{width:min(100%,1000px)}
+#setup-screen{align-items:stretch;text-align:left;justify-content:flex-start;min-height:0;padding-top:18px}
+.settings-heading,.settings-title{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.settings-heading{margin-bottom:24px}.settings-heading .back{padding-left:0}.settings-page[hidden],[hidden]{display:none!important}
+.settings-page{width:100%}.settings-page h1{font-size:34px}.settings-page>.eyebrow{margin-top:12px}.settings-page .sub{font-size:14px;max-width:680px}
+.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:28px 0}
+.settings-card{position:relative;display:flex;flex-direction:column;align-items:flex-start;text-align:left;gap:10px;background:linear-gradient(140deg,#223d51bb,#13232f);border:1px solid #395064;border-radius:22px;padding:25px;min-height:190px}
+.settings-card strong{font-size:22px;font-weight:550}.settings-card>span:not(.card-symbol){font-size:13px;color:#a9c2d4}.settings-card .card-symbol{font-size:28px;color:#94cef7;line-height:1.1}.settings-card b{position:absolute;right:24px;top:26px;color:#8db8d7;font-weight:400}
+.compact-button{display:inline-block;background:#253e52;border:1px solid #476075;border-radius:14px;padding:13px 18px;min-height:46px;color:#dceefa;font-size:14px;text-decoration:none;cursor:pointer}
+.settings-title h1{margin-right:auto}.settings-back{font-size:15px}.settings-list{display:grid;gap:12px;margin:20px 0}
+.settings-row{background:#162937;border:1px solid #344e61;border-radius:17px;padding:18px 20px;display:flex;align-items:center;gap:16px}.settings-row>div{min-width:0;flex:1}.settings-row strong{display:block;font-size:17px;font-weight:550;overflow-wrap:anywhere}.settings-row small{display:block;color:#a4bdcf;font-size:12px;line-height:1.6;margin-top:5px}.settings-row button{flex-shrink:0}.settings-row input[type=checkbox]{width:22px;height:22px;margin:0;flex-shrink:0;accent-color:#8ccafa}.settings-row label{margin:0;flex:1;cursor:pointer}.settings-row select{max-width:210px;font-size:12px}.settings-row .row-status{font-size:11px;padding:6px 10px;background:#254c42;color:#a4e5cf;border-radius:20px;white-space:nowrap}.settings-row .row-status.muted{background:#343744;color:#c2c6d3}
+.settings-form{max-width:none;width:100%;border:1px solid #466276;background:#11222e;border-radius:20px;padding:24px;margin:20px 0}.settings-form h2{margin-top:0;font-size:23px;font-weight:550}.settings-form input,.settings-form select{max-width:none}.form-columns{display:grid;grid-template-columns:1fr 1fr;gap:18px}.settings-page select{font:inherit;color:inherit;background:#0b1721;border:1px solid #42586b;border-radius:12px;padding:14px;width:100%;margin:9px 0}.toggle-label{display:flex;align-items:center;gap:10px;align-self:end;min-height:64px}.toggle-label input[type=checkbox]{width:20px;accent-color:#8ccafa}.settings-actions{display:flex;justify-content:flex-end;align-items:center;gap:12px;margin:20px 0}.settings-actions .primary{width:auto;min-width:160px;font-size:15px}.settings-actions .quiet{font-size:14px}.settings-form .number-pad{max-width:290px;margin:15px auto}.settings-form .number-pad button{min-height:44px;font-size:18px}.settings-form .number-pad button:nth-child(10){font-size:11px}
+.review-box,.sensor-test-box{padding:23px;background:#142b39;border:1px solid #45677b;border-radius:18px;margin:24px 0}.review-box h2,.sensor-test-box h2{font-size:20px;font-weight:550;margin-top:0}.sensor-test-box .sub{white-space:pre-line}.review-box p{line-height:1.55}.settings-empty{padding:28px 20px;border:1px dashed #405a6c;border-radius:16px;color:#a4bbcd;line-height:1.6;font-size:14px}
+#settings-connection details{margin:20px 0;border-bottom:1px solid #344e61;padding:15px 0}#settings-connection summary{cursor:pointer;font-size:16px}#settings-connection form{max-width:450px}#settings-connection .sub{margin-top:16px}#settings-message{color:#c2dfef;white-space:pre-line}#settings-message.error{color:#ffc8bf}
+@media(max-width:560px){.settings-grid{gap:12px}.settings-card{min-height:165px;padding:20px}.settings-card strong{font-size:18px}.settings-card>span:not(.card-symbol){font-size:12px}.settings-title{flex-wrap:wrap}.settings-row{flex-wrap:wrap;padding:16px}.settings-row select{max-width:none}.form-columns{grid-template-columns:1fr;gap:0}.settings-form{padding:18px}.settings-heading{gap:10px}.settings-heading .eyebrow{font-size:9px}.settings-actions .primary{min-width:0}}
+@media(min-width:900px) and (max-height:780px){body[data-screen="setup-screen"] main{padding-top:20px}.settings-heading{margin-bottom:10px}.settings-grid{margin:18px 0}.settings-card{min-height:160px;padding:22px}.settings-page h1{margin:10px 0}.settings-page>.sub{margin-bottom:14px}}
+.sensor-choice{display:flex;align-items:center;gap:14px}.sensor-choice>div{min-width:0}.settings-row .sub{margin:5px 0 0}.status-badge{font-size:11px;line-height:1.4;border-radius:12px;padding:7px 10px;background:#253c50;color:#b9d7ed;max-width:150px}.status-badge.confirmed,.status-badge.saved{background:#1b433c;color:#a8e4d4}.status-badge.unverified{background:#4d3930;color:#f6cfad}.activity-row{align-items:flex-start}.settings-page .compact-button:focus-visible,.settings-card:focus-visible{outline:2px solid #a2d4fa;outline-offset:3px}
+
+/* Unlocked hub: swipe on the page or tap a destination. */
+.hub-screen{touch-action:pan-y;min-height:430px;padding:32px 0 22px}
+.hub-navigation{width:100%;padding-top:18px;border-top:1px solid #ffffff16}
+.hub-page-buttons{display:flex;align-items:center;justify-content:center;gap:5px}.dock-gear{background:#ffffff0a;border:1px solid #ffffff26;border-radius:50%;width:44px;height:44px;min-height:44px;font-size:20px;color:#d3dee9;display:flex;align-items:center;justify-content:center;padding:0}
+.hub-tab{flex:1;min-height:48px;border-radius:14px;background:transparent;color:var(--muted);font-size:14px;padding:10px 8px;font-weight:550;transition:background .15s,color .15s}
+.hub-tab[aria-current="page"]{background:#b2dbff17;color:var(--accent);box-shadow:inset 0 0 0 1px #b2dbff24}
+.hub-arrow{flex:0 0 38px;min-height:48px;border-radius:14px;background:transparent;color:var(--accent);font-size:30px;font-weight:300}
+.hub-arrow:disabled{opacity:.2}
+.hub-bottom{display:flex;align-items:center;justify-content:space-between;margin-top:10px;gap:12px}
+#hub-page-hint{font-size:12px;color:var(--muted)}
+.hub-bottom .quiet{padding:10px 12px;font-size:13px;min-height:44px}
+.hub-idle{display:block;text-align:center;font-size:11px;letter-spacing:.4px;color:#93a9bc;margin-top:6px}
+.hub-symbol{width:62px;height:62px;color:var(--accent);margin:23px 0 8px}
+.hub-symbol svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.hub-screen>.sub{font-size:16px;max-width:440px}
+.hub-empty{padding:24px 28px;width:100%;max-width:450px;border:1px solid #ffffff17;border-radius:20px;background:linear-gradient(130deg,#b2d7fc09,#b2d7fc03);margin:6px 0 12px}
+.hub-empty strong{display:block;font-size:17px;font-weight:550;color:#d3e4f0}
+.hub-empty p{font-size:14px;line-height:1.6;color:var(--muted);margin:10px 0}
+.hub-empty span,.hub-pending{color:var(--muted);font-size:12px;line-height:1.5}
+.hub-device-list{display:grid;gap:10px;max-height:200px;overflow:auto;width:100%;max-width:460px}
+.hub-device{display:flex;gap:20px;align-items:center;justify-content:space-between;text-align:left;padding:18px 20px;border:1px solid #ffffff18;border-radius:15px;background:#ffffff06}
+.hub-device strong{font-size:16px;font-weight:550;overflow-wrap:anywhere}.hub-device span{font-size:12px;color:var(--muted)}
+body[data-tone="red"] .hub-tab[aria-current="page"]{background:#ffdce51a;box-shadow:inset 0 0 0 1px #ffdce52a}
+@media(max-width:450px){.hub-screen{min-height:380px;padding:26px 0 16px}.hub-tab{font-size:12px;padding:10px 4px}.hub-arrow{flex-basis:28px}.hub-page-buttons{gap:2px}.hub-empty{padding:23px 18px}.hub-navigation{padding-top:12px}}
+@media(min-width:600px) and (max-height:780px){.hub-screen{min-height:280px;padding:10px 0}.hub-screen h1{margin:8px 0}.hub-symbol{height:44px;width:44px;margin:12px 0 4px}.hub-screen>.sub{margin-bottom:14px}.hub-empty{padding:16px 25px;margin:0 0 10px;max-width:560px}.hub-navigation{padding-top:10px}.hub-bottom{margin-top:0}.hub-idle{margin-top:0}.hub-device-list{max-height:135px}.hub-device{padding:12px 18px}#home .command-grid{margin:12px 0}#home-lock{margin:12px 0 6px}.hub-screen .hub-pending{margin:10px 0}body:is([data-screen="home"],[data-screen="cameras"],[data-screen="power"],[data-screen="network"]) footer{margin-top:10px}}
+@media(prefers-reduced-motion:reduce){.hub-tab{transition:none}}
+/* Read-only equipment inventory. Keep navigation and alarm actions reachable. */
+.inventory-screen{align-items:stretch;text-align:left;justify-content:flex-start;width:100%;min-height:400px}
+.inventory-title{display:flex;justify-content:space-between;align-items:center;gap:18px;width:100%}
+.inventory-title h1{font-size:32px;margin:8px 0 10px}.inventory-title .eyebrow{font-size:9px;letter-spacing:2px}
+.inventory-title .sub{margin:0;font-size:14px}.inventory-title .compact-button{flex-shrink:0;min-height:44px}
+.inventory-status{font-size:12px;color:var(--muted);line-height:1.6;margin:18px 0 12px;min-height:20px}
+.inventory-site{font-size:12px;margin:12px 0 0;max-width:100%}.inventory-site select{font:inherit;color:inherit;background:#0b1721;border:1px solid #42586b;border-radius:12px;padding:12px;width:100%;margin-top:6px;min-height:44px}
+.equipment-list{display:grid;gap:12px;width:100%;max-height:360px;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#526a7d transparent;padding-right:3px}
+.equipment-list .hub-empty{max-width:none;box-sizing:border-box;margin:0}
+.equipment-card{border:1px solid #b5dcff24;border-radius:18px;background:linear-gradient(120deg,#b2d7fc0b,#b2d7fc03);padding:18px}
+.equipment-heading{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}
+.equipment-identity{min-width:0;flex:1}.equipment-identity strong{display:block;font-size:15px;font-weight:600;overflow-wrap:anywhere}
+.equipment-meta{display:block;font-size:11px;color:var(--muted);line-height:1.6;margin-top:5px;overflow-wrap:anywhere}
+.equipment-state{color:#d2bda5;border:1px solid #ffffff18;border-radius:20px;padding:5px 9px;font-size:10px;white-space:nowrap}
+.equipment-state.is-online{color:#9cdec8;background:#8cdbc30b;border-color:#8cdbc320}
+.equipment-row{display:flex;justify-content:space-between;align-items:center;gap:12px;border-top:1px solid #ffffff10;padding-top:12px;margin-top:12px}
+.outlet-reading{font-size:12px;color:var(--accent);text-align:right;max-width:46%;line-height:1.5}
+.equipment-ports{margin-top:12px;max-width:100%}.equipment-ports summary{cursor:pointer;color:var(--accent);font-size:12px;padding:12px 0;min-height:44px;box-sizing:border-box}
+.inventory-screen>.hub-pending{font-size:11px;margin:16px 0 0;text-align:center}
+@media(max-width:450px){.inventory-title h1{font-size:28px}.inventory-title .sub{font-size:12px}.equipment-card{padding:14px}.equipment-heading{gap:10px}.equipment-list{max-height:330px}.inventory-title .compact-button{padding:10px;font-size:12px}}
+@media(min-width:600px) and (max-height:780px){.inventory-screen{min-height:280px}.inventory-title h1{font-size:27px;margin:4px 0}.inventory-title .eyebrow{display:none}.inventory-status{margin:10px 0 8px}.equipment-list{max-height:260px;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}.equipment-card{padding:14px}.equipment-list .hub-empty{grid-column:1/-1}.inventory-screen>.hub-pending{margin-top:10px}.inventory-title .sub{font-size:12px}}
+
+
+/* A verified account sign-in has its own acknowledgement, separate from API readiness. */
+.signin-dialog{width:min(440px,calc(100vw - 32px));max-height:calc(100dvh - 32px);overflow:auto;margin:auto;padding:35px 30px 24px;text-align:center;border:1px solid #62869c66;border-radius:26px;color:#edf4f8;background:radial-gradient(ellipse at 10% 0%,#244356,transparent 85%),#0e1b26;box-shadow:0 28px 100px #0009}
+.signin-dialog::backdrop{background:#030810bf;backdrop-filter:blur(8px)}
+.signin-dialog h2{font-size:31px;font-weight:550;letter-spacing:-.8px;margin:12px 0}
+.signin-dialog .eyebrow{font-size:10px;color:#9fceb9;letter-spacing:2px;margin:20px 0 8px}
+.signin-dialog .sub{font-size:16px;margin:0 0 16px;color:#bfd0dc}
+.signin-check{width:68px;height:68px;border-radius:50%;display:grid;place-items:center;margin:0 auto;background:#8bd3b718;border:1px solid #8bd3b747;color:#9fe3c7;font-size:37px;font-weight:300}
+.signin-next{font-size:14px;line-height:1.65;color:#a6bdcd;margin:0 0 26px;text-wrap:pretty}
+.signin-dialog .primary{font-size:16px;background:#badef6;color:#122c40}
+.signin-dialog>.quiet{font-size:14px;margin-top:6px;color:#bbcfdf}
+.connected-note{display:flex;align-items:center;gap:10px;color:#9fe3c7!important;line-height:1.5;font-size:15px!important;padding:16px 18px;border:1px solid #8bd3b730;border-radius:14px;background:#8bd3b710}
+.connected-note span{font-size:20px}
+@media(max-height:560px){.signin-dialog{padding:22px}.signin-check{width:48px;height:48px;font-size:28px}.signin-dialog .eyebrow{margin-top:12px}.signin-dialog h2{font-size:27px}.signin-next{margin-bottom:16px}}
+
+/* Equipment actions stay within the authenticated hub. */
+.equipment-controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;flex-basis:100%}
+.equipment-controls:empty{display:none}
+.equipment-card:only-child{grid-column:1/-1}
+.equipment-button{min-height:44px;padding:10px 16px;border-radius:12px;border:1px solid #8dcef530;background:#7ac8ff10;color:#afd9f6;font-size:13px}
+.equipment-row{flex-wrap:wrap;column-gap:12px}
+.equipment-row .equipment-controls{margin-top:2px}
+.equipment-control-note{flex-basis:100%;color:#a9b9c7;font-size:12px;margin:0;line-height:1.5}
+.equipment-dialog{text-align:left;max-height:90dvh;overflow:auto}
+.equipment-dialog form{max-width:none}
+.equipment-dialog h2{font-size:28px;margin:12px 0}
+.equipment-target{font-weight:650;overflow-wrap:anywhere;color:#d8e9f5}
+#equipment-effect{font-size:15px;margin:20px 0}
+#equipment-result{font-size:14px;line-height:1.5;color:#dfc797}
+#equipment-cancel{width:100%;margin-top:8px}
+#finish-protection{margin:0 0 12px}
+
+/* Rename is a touch editor: the name never disappears behind a system keyboard. */
+#equipment-dialog[data-rename="true"][open]{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;width:min(780px,calc(100vw - 16px));max-height:calc(100dvh - 16px);padding:10px 12px;overflow:hidden;border-radius:22px}
+#equipment-dialog[data-rename="true"]>.eyebrow,
+#equipment-dialog[data-rename="true"]>#equipment-target{display:none}
+#equipment-dialog[data-rename="true"] #equipment-title{grid-column:1;grid-row:1;align-self:center;font-size:23px;line-height:1.2;margin:0}
+#equipment-dialog[data-rename="true"] #equipment-cancel{grid-column:2;grid-row:1;min-height:44px;width:auto;margin:0;padding:8px 16px;font-size:14px}
+#equipment-dialog[data-rename="true"] #equipment-form{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr) 140px;gap:4px 10px;min-height:0}
+#equipment-dialog[data-rename="true"] #equipment-name-label{grid-column:1;grid-row:1;position:relative;min-width:0;margin:0}
+#equipment-dialog[data-rename="true"] #equipment-name{height:44px;margin:0;padding:8px 64px 8px 12px;font-size:19px;border-radius:12px;background:#020b1b80}
+.equipment-name-count{position:absolute;right:10px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:11px;pointer-events:none}
+#equipment-dialog[data-rename="true"] #equipment-submit{grid-column:2;grid-row:1;min-height:44px;height:44px;padding:8px 10px;font-size:14px;border-radius:12px}
+#equipment-dialog[data-rename="true"] #equipment-effect,
+#equipment-dialog[data-rename="true"] #equipment-result{grid-column:1/-1;grid-row:2;margin:0;max-height:32px;overflow:auto;font-size:12px;line-height:16px;overflow-wrap:anywhere}
+#equipment-dialog[data-rename="true"] #equipment-effect,
+#equipment-dialog[data-rename="true"] #equipment-result:empty{display:none}
+#equipment-dialog[data-rename="true"][data-reviewed="true"] #equipment-effect{display:block}
+#equipment-dialog[data-rename="true"]:has(#equipment-result:not(:empty)) #equipment-effect{display:none}
+.text-keyboard{grid-column:1/-1;grid-row:3;display:flex;flex-direction:column;gap:4px;user-select:none;touch-action:none}
+.text-keyboard-row{display:flex;justify-content:center;gap:4px;width:100%}
+.text-keyboard-row:nth-child(2){width:90%;align-self:center}
+.text-key{flex:1;min-width:0;min-height:44px;height:44px;padding:4px;border:1px solid #ffffff2b;border-radius:10px;background:linear-gradient(155deg,#ffffff1c,#ffffff0a);box-shadow:inset 0 1px 0 #ffffff12;font-size:19px;color:#edf4fa;touch-action:none}
+.text-key:active{background:#ffffff38}
+.text-key[data-key="shift"],.text-key[data-key="backspace"]{flex:1.5;font-size:24px;background:#ffffff0a}
+.text-key[aria-pressed="true"]{background:#b5e3ff;color:#14283c}
+.text-key[data-key="space"]{flex:4;font-size:14px}
+.text-key[data-key="symbols"],.text-key[data-key="clear"]{flex:1.3;font-size:13px}
+.text-key[data-key="left"],.text-key[data-key="right"]{font-size:22px}
+@media(max-width:450px){
+  #equipment-dialog[data-rename="true"]{padding:8px}
+  #equipment-dialog[data-rename="true"] #equipment-form{grid-template-columns:minmax(0,1fr) 104px;column-gap:6px}
+  #equipment-dialog[data-rename="true"] #equipment-title{font-size:20px}
+  #equipment-dialog[data-rename="true"] #equipment-name{padding-right:52px;font-size:16px}
+  .text-key{font-size:16px}
+}
+
+/* Wi-Fi credentials are revealed only in this short-lived, freshly unlocked view. */
+.inventory-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.network-tools{display:flex;gap:8px;margin-top:12px;flex:none}
+.network-tools .compact-button{flex:1;min-height:46px;font-size:14px;padding:10px 8px}
+.network-tools:has(>button[hidden]):not(:has(>button:not([hidden]))){display:none}
+.speedtest-dialog{padding:24px;text-align:left}
+.speedtest-dialog .eyebrow{margin:0 0 8px}
+.speedtest-dialog h2{font-size:27px;line-height:1.15;margin:8px 0 12px}
+.speedtest-dialog #speedtest-description,.speedtest-dialog .sub{font-size:14px;line-height:1.5;margin:0 0 16px}
+.speedtest-phase{font-size:18px;font-weight:600;margin:16px 0}
+.speedtest-result-label{font-size:12px;color:var(--muted);margin:0 0 8px}
+.speedtest-metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 16px}
+.speedtest-metrics>div{padding:14px 12px;background:#bedbff12;border:1px solid #badbff30;border-radius:16px;min-width:0}
+.speedtest-metrics>div:last-child{grid-column:1/-1;display:flex;justify-content:space-between;align-items:baseline;padding:10px 12px}
+.speedtest-metrics dt{font-size:13px;color:var(--muted)}
+.speedtest-metrics dd{font-size:28px;margin:4px 0 0;font-weight:550;font-variant-numeric:tabular-nums}
+.speedtest-metrics small{font-size:12px;font-weight:400;margin-left:5px;color:var(--muted)}
+.speedtest-metrics>div:last-child dd{font-size:20px;margin:0}
+.speedtest-dialog>.quiet{display:block;width:100%;min-height:44px}
+.wifi-dialog{width:min(520px,calc(100vw - 32px));padding:24px 28px 16px}
+.wifi-dialog .eyebrow{margin:0 0 8px;color:#96c9ef}
+.wifi-dialog h2{font-size:28px}.wifi-dialog>.sub{font-size:14px;overflow-wrap:anywhere}
+.wifi-dialog form{max-width:340px;margin:0 auto}
+.wifi-dialog label{font-size:14px;text-align:center;margin-bottom:8px}
+#wifi-pin{font-size:24px;letter-spacing:7px;text-align:center;height:48px;margin:8px 0 12px;padding:8px}
+.wifi-dialog .number-pad{margin:0 0 12px;gap:8px}.wifi-dialog .number-pad button{height:48px;min-height:44px;font-size:21px}
+.wifi-dialog .number-pad button[data-key="clear"]{font-size:14px}
+.wifi-dialog .primary{min-height:48px;padding:12px;font-size:15px}
+.wifi-hide-note{color:var(--muted);font-size:12px;line-height:1.5;margin:4px 0 16px}
+.wifi-list{display:grid;gap:12px;max-height:50dvh;overflow:auto;overscroll-behavior:contain;text-align:left;padding-right:3px}
+.wifi-network{border:1px solid #b5dcff28;border-radius:16px;padding:16px 18px;background:#b2d7fc08;min-width:0}
+.wifi-network h3{font-size:18px;line-height:1.4;white-space:pre-wrap;overflow-wrap:anywhere;margin:0}
+.wifi-network-state{font-size:11px;color:var(--muted);margin:5px 0 14px}
+.wifi-password-label{font-size:11px;color:var(--muted)}
+.wifi-password{font:500 20px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;white-space:pre-wrap;overflow-wrap:anywhere;color:#d3edff;margin:4px 0 0;user-select:text}
+.wifi-unavailable{font-size:14px;line-height:1.5;color:#b9ccd9;margin:8px 0 0}
+#wifi-result{font-size:14px;color:#edd09f;margin:12px 0 0;line-height:1.5}#wifi-result:empty{display:none}
+#wifi-close{min-height:44px;margin:8px 0 0;width:100%}
+@media(max-width:600px){#network .inventory-title{flex-wrap:wrap;gap:14px}.inventory-actions{justify-content:flex-start;width:100%}.wifi-dialog{padding:22px 20px 14px}}
+@media(max-height:600px){.wifi-dialog{padding:16px 24px 10px}.wifi-dialog .eyebrow{display:none}.wifi-dialog h2{margin:0 0 5px}.wifi-dialog .number-pad button{height:44px}.wifi-dialog .number-pad{gap:5px;margin-bottom:8px}#wifi-pin{margin:5px 0 8px;height:44px}.wifi-dialog>.sub{margin-bottom:8px}}
+
+.bypass-summary{display:flex;align-items:flex-start;gap:12px}#bypass-text{flex:1;white-space:pre-line}.bypass-dismiss{flex:none;width:34px;height:34px;border-radius:50%;border:1px solid #dfb76788;background:transparent;color:#e8c88f;font-size:19px;line-height:1;padding:0}.bypass-choices{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.bypass-choices-label{font-size:13px;color:#e8c88f}.bypass-choices button{border:1px solid #dfb76788;background:#dcb66e18;color:#e8c88f;border-radius:10px;padding:10px 14px;font-size:13px;min-height:44px}.bypass-summary{border:1px solid #dfb76755;background:#dcb66e10;border-radius:14px;padding:12px 16px;font-size:13px;line-height:1.5;color:#e8c88f;white-space:pre-line;overflow-wrap:anywhere;margin:0 0 14px}
+.arm-review-dialog{max-height:90dvh;overflow:auto}.arm-review-dialog h2{font-size:28px}.bypass-doors{white-space:pre-line;text-align:left;line-height:1.8;color:#efd2a0}
+.mute-choice{display:flex;align-items:center;gap:12px;text-align:left;font-size:15px;line-height:1.5;margin:24px 0 10px}.mute-choice input{width:22px;height:22px;flex-shrink:0;margin:0}
+#cancel-bypass{width:100%;margin-top:8px}.sensor-controls{display:flex;flex-direction:column;gap:8px;min-width:155px}.sensor-controls select{min-height:44px;width:100%}
+.home-sensors{margin:20px 0 0;width:100%;max-width:640px;text-align:left;font-size:14px;color:var(--muted)}.home-sensors summary{cursor:pointer;min-height:44px;padding:12px 0}#home-sensor-status{white-space:pre-line;line-height:1.9;margin:0;max-height:24vh;overflow:auto}
+@media(max-height:600px){.bypass-summary{padding:8px 12px;margin-bottom:6px;font-size:12px}.arm-review-dialog{padding:18px 24px}.arm-review-dialog h2{font-size:24px}.mute-choice{margin:12px 0 4px}.home-sensors{margin:6px 0 0}}
+
+/* Leave room for navigation at the five-inch panel's enlarged display scale.
+   Reduce decorative spacing, while keeping readable labels and large targets. */
+@media (max-width:560px) and (max-height:850px) and (orientation:portrait){
+  main{padding:18px 22px}
+  #home{min-height:0;padding:18px 0 10px}
+  #home-lock{width:54px;height:54px;margin:10px 0 2px}
+  #home h1{margin:10px 0}
+  #home>.sub{margin-bottom:12px}
+  #home .command-grid{gap:12px;margin:14px 0 8px}
+  #home .command{min-height:96px}
+  #home .command .lock-icon{width:26px;height:26px;margin-bottom:8px}
+  #home .disarm-span{min-height:88px}
+  body:is([data-alarm-mode="armed"],[data-alarm-mode="exit"],[data-alarm-mode="entry"],[data-alarm-mode="breach"]) #home .disarm-span{min-height:96px}
+  .home-sensors{margin-top:6px}
+  .hub-navigation{padding-top:10px}
+  .hub-bottom{margin-top:4px}
+  .hub-arrow{flex-basis:36px}
+}
+
+/* Fit everyday controls to the available panel viewport. Lists scroll inside
+   their page; the header, navigation and primary alarm actions stay in reach. */
+body[data-screen] main{width:min(100%,720px);height:100dvh;max-height:1000px;min-height:0;padding:16px 22px;overflow:hidden;gap:0}
+body[data-screen] main>header{flex:none;min-height:48px;margin-bottom:12px}
+body[data-screen] #settings{width:48px;min-height:48px;padding:8px;font-size:24px}
+body[data-screen] main>.screen{flex:1;min-height:0;padding:12px 0;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin}
+body[data-screen] main>.screen:not(.inventory-screen){justify-content:center}
+body[data-screen] main>.screen>*,body[data-screen] header{flex-shrink:0}
+body[data-screen] .brand{font-size:17px;letter-spacing:3px}
+body[data-screen] .brand span{font-size:9px;margin-top:4px}
+body[data-screen] .bypass-summary{flex:none;align-items:center;gap:12px;margin:0 0 8px;padding:6px 10px 6px 14px;min-height:54px}
+body[data-screen] #bypass-text{font-size:13px;line-height:1.35;white-space:normal}
+#bypass-details{font-size:13px;min-height:44px;padding:8px 12px;flex:none}
+body:is([data-screen="pin-screen"],[data-screen="setup-screen"],[data-screen="setup-success"]) #bypass-summary{display:none}
+body[data-screen] .connection-alert{flex:none;flex-direction:row;align-items:center;gap:10px;margin:0 0 8px;padding:10px 12px}
+body[data-screen] .connection-alert button{align-self:center;max-width:125px;padding:10px;white-space:normal}
+body[data-screen="pin-screen"] .connection-alert p{display:none}
+body[data-screen] .alert-strip{flex:none;margin:0 0 8px;padding:6px 12px;min-height:50px}
+body[data-screen] #entry-observation{flex:none;margin:4px 0;font-size:11px;max-height:48px;overflow:auto}
+body[data-screen] #message:not(:empty){flex:none;font-size:13px;line-height:1.4;min-height:0;margin:6px 0;max-height:56px;overflow:auto}
+body[data-screen] footer{flex:none;margin-top:10px}
+body:is([data-screen="home"],[data-screen="cameras"],[data-screen="power"],[data-screen="network"],[data-screen="setup-screen"],[data-screen="pin-screen"]) footer{display:none}
+body[data-screen] #standby-display,body[data-screen] .alarm-display{min-height:0}
+body[data-screen] #sleep{gap:20px;min-height:0}
+body[data-screen] #sleep .wake{margin:0;min-height:56px;padding:14px 26px}
+body[data-screen] #sleep .bottom-note{margin:0;font-size:10px;letter-spacing:1.5px}
+body[data-screen] .clock{font-size:clamp(58px,16vw,92px);letter-spacing:-4px;line-height:1.1}
+body[data-screen] #date{font-size:17px;margin:12px 0}
+body[data-screen] #standby-status{margin:10px 0 0}
+body[data-screen] .countdown-face{width:min(220px,32dvh)}
+body[data-screen] .countdown-value{font-size:clamp(60px,12dvh,90px)}
+body[data-screen] .alarm-display .eyebrow{margin:0 0 12px}
+body[data-screen] .alarm-detail{font-size:14px;margin:12px auto 0}
+body[data-screen] #home{padding:8px 0;gap:8px}
+body[data-screen] #site-name{font-size:10px;letter-spacing:2px}
+body[data-screen] #home-lock{height:36px;width:36px;margin:0}
+body[data-screen] #home h1{font-size:32px;line-height:1.15;margin:0}
+body[data-screen] #home>.sub{font-size:14px;line-height:1.4;margin:0;max-width:440px}
+body[data-screen] #finish-protection{margin:0;padding:10px 14px;min-height:44px;font-size:14px}
+body[data-screen] #home .command-grid{gap:10px;margin:6px 0 0;width:100%}
+body[data-screen] #home .command{min-height:86px;border-radius:18px;padding:12px}
+body[data-screen] #home .command .lock-icon{width:24px;height:24px;margin:0 auto 6px}
+body[data-screen] #home .command>span:not(.lock-icon){font-size:20px}
+body[data-screen] #home .disarm-span{min-height:54px;display:flex;align-items:center;justify-content:center;gap:10px}
+body[data-screen] #home .disarm-span .lock-icon{margin:0}
+body:is([data-alarm-mode="armed"],[data-alarm-mode="exit"],[data-alarm-mode="entry"],[data-alarm-mode="breach"]) #home .disarm-span{min-height:76px}
+body[data-screen] .home-sensors{margin:0;width:auto;text-align:center;min-height:44px;padding:10px 16px;font-size:14px}
+body[data-screen] .hub-navigation{flex:none;padding-top:8px;margin-top:4px;background:transparent}
+body[data-screen] .hub-tab{min-height:46px;font-size:13px;padding:8px 5px}
+body[data-screen] .hub-arrow{flex-basis:26px;min-height:46px}
+body[data-screen] .hub-bottom{margin-top:2px;min-height:44px}
+body[data-screen] #hub-page-hint{font-size:11px}
+body[data-screen] .hub-idle{display:none}
+body[data-screen] .hub-bottom .quiet{padding:8px 12px;min-height:44px}
+body[data-screen] #pin-screen{padding:0;gap:8px}
+body[data-screen] #pin-screen .eyebrow{display:none}
+body[data-screen] #pin-screen .back{min-height:44px;padding:8px 14px}
+body[data-screen] #pin-screen h1{font-size:28px;margin:0}
+body[data-screen] #pin-screen .sub{font-size:14px;line-height:1.4;margin:0}
+body[data-screen] #pin{height:48px;padding:8px;margin:6px 0}
+body[data-screen] #pin-screen .number-pad{gap:8px;margin:6px 0 12px}
+body[data-screen] #pin-screen .number-pad button{min-height:50px;font-size:23px}
+body[data-screen] #pin-screen .number-pad button:nth-child(10){font-size:15px}
+body[data-screen] #unlock-button{min-height:50px;padding:12px}
+body[data-screen] .inventory-screen{padding:8px 0;overflow:hidden}
+body[data-screen] .inventory-title{gap:10px;flex-wrap:nowrap!important;align-items:center}
+body[data-screen] .inventory-title .eyebrow{display:none}
+body[data-screen] .inventory-title h1{font-size:28px;margin:0 0 6px}
+body[data-screen] .inventory-title .sub{font-size:12px;line-height:1.4}
+body[data-screen] .inventory-actions{width:auto;flex:none;max-width:146px;justify-content:flex-end;gap:6px}
+body[data-screen] .inventory-actions .compact-button{padding:10px;font-size:12px}
+body[data-screen] .inventory-status{margin:10px 0 8px;min-height:0;line-height:1.4}
+body[data-screen] .inventory-site{margin:4px 0}
+body[data-screen] .equipment-list{flex:1;min-height:0;max-height:none;align-content:start;grid-template-columns:1fr;flex-shrink:1}
+body[data-screen] .inventory-screen>.hub-pending{font-size:11px;line-height:1.4;margin:8px 0 0}
+body[data-screen] #cameras{align-items:stretch;padding:8px 0;gap:10px;overflow:hidden}
+body[data-screen] #cameras>.eyebrow,body[data-screen] #cameras>.hub-symbol{display:none}
+body[data-screen] #cameras h1{font-size:28px;margin:0}
+body[data-screen] #cameras>.sub,body[data-screen] #cameras>.hub-pending{margin:0;font-size:13px}
+body[data-screen] .hub-device-list{flex:1;min-height:0;max-height:none;align-content:start;max-width:none;flex-shrink:1}
+body[data-screen] #setup-screen{justify-content:flex-start;padding:0;gap:0}
+body[data-screen] .settings-heading{position:sticky;top:0;z-index:2;margin:0 0 8px;padding:0;background:#122330;gap:8px}
+body[data-screen] .settings-heading .quiet{min-height:44px;padding:8px 12px}
+body[data-screen] #close-setup{margin-left:auto;white-space:nowrap}
+body[data-screen] #settings-identity{padding-left:12px;min-width:0;overflow-wrap:anywhere;font-size:10px;letter-spacing:1px}
+body[data-screen] .settings-page h1{font-size:30px;margin:8px 0}
+body[data-screen] #settings-overview>.eyebrow{display:none}
+body[data-screen] #settings-overview>.sub{font-size:13px;margin-bottom:12px}
+body[data-screen] .settings-grid{gap:10px;margin:16px 0}
+body[data-screen] .settings-card{min-height:132px;padding:16px;gap:8px;border-radius:18px}
+body[data-screen] .settings-card strong{font-size:17px}
+body[data-screen] .settings-card .card-symbol{font-size:23px}
+body[data-screen] .settings-card>span:not(.card-symbol){font-size:12px;line-height:1.4}
+body[data-screen] .settings-card b{top:15px;right:16px}
+.door-status-dialog{text-align:left;padding:24px;max-height:calc(100dvh - 24px)}
+.door-status-dialog h2{font-size:28px;margin:0 0 18px}
+.door-status-dialog #home-sensor-status{font-size:15px;line-height:1.8;max-height:35dvh;margin-bottom:16px}
+.door-status-dialog #bypass-detail{font-size:14px;white-space:pre-line;line-height:1.5}
+.door-status-dialog .bypass-dismiss{width:auto;height:auto;min-height:44px;border-radius:12px;padding:10px 14px;font-size:14px;margin-bottom:10px}
+.door-status-dialog .bypass-choices{margin-bottom:14px}
+.door-status-dialog .primary{margin-top:12px;min-height:48px;padding:12px}
+@media(max-width:560px) and (max-height:760px){
+  body[data-screen] main{padding:12px 18px}
+  body[data-screen] #home-lock{display:none}
+  body[data-screen] #home{gap:8px}
+  body[data-screen] #home h1{font-size:30px}
+  body[data-screen] .equipment-card{padding:12px}
+}
+@media(min-width:600px) and (max-height:560px){
+  body[data-screen] main{width:min(100%,960px);padding:10px 18px}
+  body[data-screen] main>header{min-height:44px;margin-bottom:6px}
+  body[data-screen] #home{display:grid;grid-template-columns:1fr 1.2fr;grid-template-rows:auto auto 1fr auto;column-gap:24px;text-align:left;align-content:center}
+  body[data-screen] #site-name{grid-column:1;grid-row:1}
+  body[data-screen] #home-lock{display:none}
+  body[data-screen] #home h1{grid-column:1;grid-row:2;font-size:28px}
+  body[data-screen] #state-note{grid-column:1;grid-row:3}
+  body[data-screen] #finish-protection{grid-column:1;grid-row:4;justify-self:start}
+  body[data-screen] #home .command-grid{grid-column:2;grid-row:1 / 4;margin:0}
+  body[data-screen] #home .command{min-height:65px;padding:8px}
+  body[data-screen] #home .command .lock-icon{display:none}
+  body[data-screen] #home .disarm-span{min-height:48px}
+  body[data-screen] #door-status-button{grid-column:2;grid-row:4}
+  body[data-screen] .hub-navigation{display:flex;align-items:center;gap:10px;padding-top:5px}
+  body[data-screen] .hub-page-buttons{flex:1}
+  body[data-screen] .hub-bottom{margin:0}
+  body[data-screen] #hub-page-hint{display:none}
+  body[data-screen] #sleep{gap:8px 22px;grid-template-rows:1fr auto auto 1fr}
+  body[data-screen] #sleep .bottom-note{font-size:9px}
+  body[data-screen] #standby-display,body[data-screen] #alarm-display{min-height:0}
+  body[data-screen] .countdown-face{width:145px}
+  body[data-screen] .countdown-value{font-size:62px}
+  body[data-screen] .alarm-detail{margin-top:5px;font-size:12px}
+  body[data-screen] .alarm-display .eyebrow{font-size:10px;margin-bottom:5px}
+  body[data-screen] #pin-screen{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:0 24px}
+  body[data-screen] #pin-screen .back{grid-column:1;grid-row:1;justify-self:start;align-self:start}
+  body[data-screen] #pin-screen h1{grid-column:1;grid-row:2;display:block}
+  body[data-screen] #pin-screen .sub{grid-column:1;grid-row:3;display:block}
+  body[data-screen] #unlock-form{grid-column:2;grid-row:1 / 5;max-width:340px}
+  body[data-screen] #pin-screen .number-pad{gap:4px;margin:1px 0}
+  body[data-screen] #pin-screen .number-pad button{min-height:44px;font-size:21px}
+  body[data-screen] #pin{height:44px;margin:0}
+  body[data-screen] #unlock-button{min-height:44px;padding:8px}
+  body[data-screen] .equipment-list{grid-template-columns:repeat(2,minmax(0,1fr))}
+  body[data-screen] .inventory-title .sub,body[data-screen] .inventory-screen>.hub-pending{display:none}
+  body[data-screen] .inventory-status{margin:4px 0}
+  body[data-screen] .inventory-title h1{font-size:24px;margin:0}
+  body[data-screen] .inventory-actions{max-width:none}
+  body[data-screen] .settings-grid{grid-template-columns:repeat(4,1fr);margin:10px 0}
+  body[data-screen] .settings-card{min-height:120px;padding:14px}
+  body[data-screen] #settings-overview>.sub{display:none}
+}
+body[data-screen] #settings-sensors{display:flex;flex-direction:column;flex:1;min-height:0}
+body[data-screen] #settings-sensors>*{flex:none}
+body[data-screen] .sensor-toolbar{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.35fr);align-items:stretch;gap:12px;margin-bottom:12px}
+body[data-screen] .sensor-heading{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:6px}
+body[data-screen] .sensor-heading h1{font-size:26px;margin:0;line-height:1.15}
+body[data-screen] #refresh-sensors{min-height:44px;padding:8px 12px;font-size:13px}
+body[data-screen] .sensor-test-box{display:flex;flex-direction:column;justify-content:center;gap:6px;margin:0;padding:10px 12px;border-radius:18px;min-width:0}
+body[data-screen] .sensor-test-box h2{font-size:15px;line-height:1.25;margin:0}
+body[data-screen] #sensor-test-summary{margin:0;font-size:13px;line-height:1.35}
+body[data-screen] #enable-sensors{padding:8px;font-size:12px;min-height:44px;width:100%}
+body[data-screen] #sensor-list{flex:1;min-height:80px;overflow:auto;overscroll-behavior:contain;margin:0;scrollbar-width:thin;align-content:start;gap:8px}
+body[data-screen] #sensor-list .sensor-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(134px,44%);gap:10px;padding:12px;border-radius:18px}
+body[data-screen] #sensor-list .sensor-row strong{font-size:16px;line-height:1.3;overflow-wrap:anywhere}
+body[data-screen] #sensor-list .sensor-row .sub{font-size:13px;line-height:1.35;margin:4px 0 0}
+body[data-screen] #sensor-list .sensor-controls{min-width:0;gap:6px}
+body[data-screen] #sensor-list select{margin:0;min-height:44px;padding:10px 8px;font-size:14px}
+body[data-screen] #settings-sensors>.settings-actions{margin:10px 0 0}
+body[data-screen] #settings-sensors>.settings-actions .primary{width:100%;min-height:46px;padding:12px}
+body[data-screen] .sensor-reminders{margin-top:4px}
+body[data-screen] .sensor-reminders summary{min-height:44px;padding:12px 0;font-size:13px;color:var(--muted)}
+body[data-screen] .sensor-reminders :is(#sensor-message,#sensor-test-state){font-size:13px;line-height:1.4;margin:0 0 12px}
+body[data-screen] .sensor-reminders h3{font-size:15px;margin:16px 0 8px}
+body[data-screen] #settings-sensors:has(.sensor-reminders[open]){overflow:auto}
+body[data-screen] #settings-sensors:has(.sensor-reminders[open]) #sensor-list{flex:none;max-height:240px;min-height:0}
+body[data-screen] #settings-sensors:has(#sensor-review:not([hidden])){overflow:auto}
+body[data-screen] #settings-sensors:has(#sensor-review:not([hidden])) :is(.sensor-toolbar,#sensor-list,.sensor-reminders){display:none}
+body[data-screen] #settings-sensors:has(#sensor-review:not([hidden]))>.settings-actions{display:none}
+body[data-screen] #sensor-review{margin:10px 0;padding:16px}
+body[data-screen="setup-screen"]:has(#settings-sensors:not([hidden])) #entry-observation{display:none}
+
+/* Glass surfaces share a static backdrop; no continuously animated blur on Pi. */
+body{
+  --glass-fill:linear-gradient(145deg,#ecf6ff19,#d3e8ff08);
+  --glass-edge:#e3efff30;
+  --glass-shadow:inset 0 1px 0 #ffffff20,0 8px 24px #030b231c;
+  --accent:#b0ddff;--muted:#c0cfe4;
+  background:radial-gradient(ellipse at 8% 12%,#2c6089 0,transparent 56%),
+    radial-gradient(ellipse at 105% 57%,#484272 0,transparent 53%),
+    radial-gradient(ellipse at 12% 110%,#186273 0,transparent 55%),#101b32;
+  background-attachment:fixed;
+}
+body::before{
+  background:radial-gradient(ellipse at 10% 8%,#754552 0,transparent 60%),
+    radial-gradient(ellipse at 105% 65%,#462a58 0,transparent 56%),#241324;
+}
+body[data-screen] .brand span{color:#c1d1e4}
+body[data-screen] .sub,body[data-screen] #date{color:var(--muted)}
+body[data-screen] :is(.quiet,.compact-button,.equipment-button,.hub-empty,.equipment-card,.hub-device,.settings-card,.settings-row,.settings-form,.review-box,.sensor-test-box,.wifi-network){
+  background:var(--glass-fill);border:1px solid var(--glass-edge);box-shadow:var(--glass-shadow);
+}
+body[data-screen] :is(.quiet,.compact-button,.equipment-button){color:#e2efff}
+body[data-screen] :is(.primary,.arm){
+  background:linear-gradient(145deg,#aedcffeb,#77baf5cd);border:1px solid #e9f7ff7a;
+  box-shadow:inset 0 1px 0 #ffffff70,0 6px 20px #081b4526;color:#102a48;
+}
+body[data-screen] .arm .lock-icon{color:#183d64}
+body[data-screen] .disarm{
+  background:linear-gradient(145deg,#eff6ff26,#d9eaff0d);border:1px solid var(--glass-edge);box-shadow:var(--glass-shadow);
+}
+body[data-tone="red"] :is(.disarm,.primary){background:linear-gradient(145deg,#ffe5eadb,#e6b8c6ce);color:#381e31}
+body[data-screen] input,body[data-screen] select{
+  background:#07132945;border-color:#d1e7ff48;box-shadow:inset 0 1px 4px #03102633;
+}
+body[data-screen] .hub-navigation{border-top-color:#e3efff24}
+body[data-screen] .hub-page-buttons{
+  border:1px solid #e3efff23;border-radius:22px;padding:4px;background:#d9eaff0b;box-shadow:var(--glass-shadow);
+}
+body[data-screen] .hub-tab[aria-current="page"]{
+  background:linear-gradient(150deg,#eff7ff29,#e0edff0e);color:#e8f5ff;box-shadow:inset 0 1px 0 #ffffff50,0 2px 8px #05102b25;
+}
+body[data-screen] .settings-heading{background:#192d47e8;border-radius:14px}
+body[data-screen] .bypass-summary{background:#f8c78013;border-color:#f6d39c52;color:#ffe3b5;box-shadow:inset 0 1px 0 #ffffff12}
+body[data-screen] .connection-alert{background:#513e26b8;border-color:#f6d39c52}
+body[data-screen] .alert-strip{background:#f5d4df15;border-color:#f5d4df45}
+body[data-screen] .signin-dialog{
+  background:linear-gradient(150deg,#2b456beF,#182940f5);border:1px solid #e1edff50;
+  box-shadow:inset 0 1px 0 #ffffff35,0 24px 80px #040d2c80;
+}
+body[data-screen] .signin-dialog::backdrop{background:#050d2466;backdrop-filter:blur(12px)}
+
+/* The lock screen and PIN pad are fixed views, including while swiping.
+   The on-screen keypad avoids a software keyboard resizing the panel. */
+html:has(body:is([data-screen="sleep"],[data-screen="pin-screen"])){
+  height:100%;overflow:hidden;overscroll-behavior:none;
+}
+body:is([data-screen="sleep"],[data-screen="pin-screen"]){
+  height:100dvh;min-height:0;overflow:hidden;overscroll-behavior:none;
+}
+body:is([data-screen="sleep"],[data-screen="pin-screen"]) main{
+  height:100dvh;max-height:100dvh;overflow:hidden;padding:16px 22px 12px;
+}
+body:is([data-screen="sleep"],[data-screen="pin-screen"]) footer{display:none}
+body:is([data-screen="sleep"],[data-screen="pin-screen"]) #entry-observation{display:none}
+body:is([data-screen="sleep"],[data-screen="pin-screen"]) #message:not(:empty){
+  max-height:none;overflow:visible;font-size:13px;line-height:1.35;margin:6px 0 2px;
+}
+body:is([data-screen="sleep"],[data-screen="pin-screen"]) main>.screen{
+  min-height:0;overflow:hidden;overscroll-behavior:none;touch-action:none;
+}
+body[data-screen] #sleep{display:flex;position:relative;padding:0;gap:12px;justify-content:space-between}
+body[data-screen] #standby-display{
+  flex:1;flex-shrink:1;min-height:0;width:100%;padding:12px 0 0;
+  transform:translateY(calc(var(--swipe-lift,0px) * -.32));transition:transform .22s ease;
+}
+body[data-screen] #sleep[data-swiping="true"] #standby-display{transition:none}
+body[data-screen] #date{order:-1;font-size:17px;font-weight:500;margin:0 0 6px;color:#e1ebfa}
+body[data-screen] .clock{
+  font-size:clamp(64px,18vw,102px);font-weight:240;letter-spacing:-4px;
+  color:#eff7ff;text-shadow:0 2px 22px #cbe5ff1f;
+}
+body[data-screen] #standby-status{
+  margin:24px 0 0;padding:11px 18px;border-radius:999px;font-size:14px;letter-spacing:.5px;
+  background:var(--glass-fill);border:1px solid var(--glass-edge);box-shadow:var(--glass-shadow);color:#d5eeff;
+}
+body[data-screen] #settings{border-radius:50%;background:var(--glass-fill)}
+.swipe-unlock{
+  flex:none;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:10px;
+  width:100%;height:148px;padding:22px 16px 12px;touch-action:none;user-select:none;-webkit-user-select:none;
+  font-size:15px;color:#e4edfc;cursor:grab;outline:none;
+}
+.swipe-unlock:active{cursor:grabbing}
+.swipe-unlock:focus-visible{outline:2px solid #bce7ff;outline-offset:-4px;border-radius:26px}
+.swipe-chevron{width:25px;height:25px;fill:none;stroke:#e0f1ff;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.swipe-handle{
+  display:block;width:112px;height:5px;margin-top:15px;border-radius:999px;background:#eef7ffe6;
+  box-shadow:0 1px 8px #b5dfff30;transform:translateY(calc(var(--swipe-lift,0px) * -.12));transition:transform .22s ease;
+}
+#sleep[data-swiping="true"] .swipe-handle{transition:none}
+body[data-screen] #sleep .alarm-display{flex:1;flex-shrink:1;min-height:0;justify-content:center}
+body[data-screen] #sleep .wake{margin:0 0 18px;min-height:56px;flex:none;border-radius:999px}
+body[data-screen] #pin-screen{position:relative;min-height:0;padding:56px 0 8px;gap:10px;justify-content:center}
+body[data-screen] #pin-screen .back{position:absolute;top:0;left:0;border-radius:999px;padding:8px 16px}
+body[data-screen] #pin-screen h1{font-size:30px;font-weight:500;letter-spacing:-.8px}
+body[data-screen] #pin-screen .sub{font-size:14px;line-height:1.4;max-width:310px}
+body[data-screen] #unlock-form{
+  display:flex;flex:1;flex-shrink:1;min-height:0;max-height:382px;flex-direction:column;
+  width:100%;max-width:310px;padding:10px 0 0;
+}
+body[data-screen] #pin{
+  flex:none;height:50px;margin:0 0 14px;padding:8px 12px;border-radius:999px;
+  background:#08162930;border:1px solid #ecf5ff42;box-shadow:inset 0 2px 10px #02091a30;
+}
+body[data-screen] #pin:focus-visible{outline:2px solid #b9e8ff88;outline-offset:3px}
+body[data-screen] #pin-screen #number-pad{
+  flex:1;flex-shrink:1;min-height:0;display:grid;grid-template-rows:repeat(4,minmax(44px,1fr));
+  gap:10px 16px;margin:0;
+}
+body[data-screen] #pin-screen .number-pad button{
+  min-height:44px;height:100%;padding:0;border-radius:999px;font-size:26px;font-weight:430;
+  touch-action:none;user-select:none;-webkit-user-select:none;
+  background:linear-gradient(150deg,#f3f8ff25,#dceaff10);border:1px solid #e3efff30;
+  box-shadow:inset 0 1px 0 #ffffff36,0 4px 12px #020b2420;color:#f0f6ff;
+}
+body[data-screen] #pin-screen .number-pad button:active{background:#e2f1ff36}
+body[data-screen] #pin-screen .number-pad button:nth-child(10){font-size:14px}
+@supports(backdrop-filter:blur(1px)){
+  body[data-screen] :is(#standby-status,#settings,.hub-page-buttons){backdrop-filter:blur(16px) saturate(130%)}
+}
+@media(max-height:680px){
+  body:is([data-screen="sleep"],[data-screen="pin-screen"]) main{padding:10px 18px}
+  body[data-screen] #home{gap:6px;padding:6px 0}
+  body[data-screen] #pin-screen{padding-top:48px;gap:6px}
+  body[data-screen] #pin-screen h1{font-size:26px}
+  body[data-screen] #unlock-form{padding-top:4px}
+  body[data-screen] #pin{height:44px;margin-bottom:8px}
+  body[data-screen] #pin-screen #number-pad{gap:6px 12px}
+  .swipe-unlock{height:118px;padding-top:10px}
+  body[data-screen] #standby-status{margin-top:16px}
+}
+@media(min-width:600px) and (max-height:560px){
+  body[data-screen] #sleep{display:flex;flex-direction:column;gap:4px;align-items:center;container:lock-screen / size}
+  body[data-screen] #standby-display,body[data-screen] #alarm-display{height:auto;padding:0;width:100%;text-align:center}
+  body[data-screen] #swipe-unlock{height:82px;min-height:0;justify-content:flex-end;gap:6px;padding:6px 16px 12px}
+  body[data-screen] #swipe-unlock .swipe-handle{margin-top:8px}
+  body[data-screen] #sleep #wake{align-self:center;margin:0 0 12px;min-height:44px;padding:10px 24px}
+  body[data-screen] #sleep .clock{font-size:clamp(54px,30cqh,104px);line-height:1.06;letter-spacing:-4px;white-space:nowrap}
+  body[data-screen] #sleep #date{font-size:16px;line-height:1.2;margin:0 0 4px}
+  body[data-screen] #sleep #standby-status{margin-top:10px;padding:6px 16px}
+  body[data-screen] #sleep .countdown-face{width:clamp(92px,44cqh,154px);flex:none}
+  body[data-screen] #sleep .countdown-value{font-size:clamp(42px,19cqh,62px)}
+  body[data-screen] #sleep .breach-symbol{width:46px;height:46px;font-size:30px;margin:4px auto 10px}
+  body[data-screen] #sleep .breach-display h1{font-size:30px}
+  body[data-screen] #pin-screen{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:48px 1fr 1fr;gap:6px 24px;padding:0;align-items:center}
+  body[data-screen] #pin-screen .back{position:static;grid-column:1;grid-row:1;align-self:start}
+  body[data-screen] #pin-screen h1{grid-column:1;grid-row:2;align-self:end}
+  body[data-screen] #pin-screen .sub{grid-column:1;grid-row:3;align-self:start}
+  body[data-screen] #unlock-form{grid-column:2;grid-row:1 / 4;height:100%;max-height:300px;padding:0}
+  body[data-screen] #pin-screen #number-pad{gap:5px 10px}
+  body[data-screen] #pin-screen .number-pad button{font-size:23px}
+}
+@container lock-screen (max-height:230px){
+  body[data-screen] #swipe-unlock{height:64px;gap:3px;padding:2px 12px 8px;font-size:13px}
+  body[data-screen] #swipe-unlock .swipe-chevron{width:19px;height:19px}
+  body[data-screen] #swipe-unlock .swipe-handle{margin-top:5px}
+  body[data-screen] #sleep #date{font-size:14px}
+  body[data-screen] #sleep #standby-status{margin-top:6px;padding:4px 14px;font-size:12px}
+}
+@container lock-screen (max-height:180px){
+  body[data-screen] #sleep .clock{font-size:clamp(42px,26cqh,48px);letter-spacing:-2px}
+  body[data-screen] #sleep #standby-status{margin-top:4px;padding:3px 14px}
+  body[data-screen] #sleep #standby-lock{width:18px;height:18px}
+  body[data-screen] #swipe-unlock{height:52px;gap:2px;padding:0 12px 6px}
+  body[data-screen] #swipe-unlock .swipe-chevron{width:16px;height:16px}
+  body[data-screen] #swipe-unlock .swipe-handle{margin-top:2px}
+}
+@media(prefers-reduced-motion:no-preference){
+  body[data-screen="pin-screen"] #pin-screen{animation:glass-pin-in .24s ease-out both}
+  @keyframes glass-pin-in{from{opacity:0}to{opacity:1}}
+}
+@media(prefers-reduced-motion:reduce){
+  body[data-screen] #standby-display,.swipe-handle{transition:none;transform:none}
+}
+body[data-screen="sleep"] main{padding-bottom:0}
+
+/* The Touch Display 2 runs in landscape. Keep physical touch targets large,
+   use the width for parallel controls, and give lists their own scroll area. */
+@media (min-width:600px) and (orientation:landscape){
+  body[data-screen] main{width:min(100%,1280px)}
+  body[data-screen] #hub-camera-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;align-content:start}
+}
+@media (min-width:600px) and (max-height:560px){
+  body[data-screen] .compact-button{min-height:32px;padding:4px 12px;font-size:12px;border-radius:16px}
+  body[data-screen] .inventory-status{font-size:10px;margin:2px 0;opacity:0.7}
+  body[data-screen] .hub-pending{display:none!important}
+  body[data-screen] .equipment-list{gap:8px;padding:4px 0}
+  body[data-screen] .equipment-card{min-height:72px;padding:12px 14px;border-radius:16px}
+  body[data-screen] .equipment-card h3{font-size:17px;margin:0 0 2px}
+  body[data-screen] .equipment-card .equipment-meta{font-size:12px}
+  body[data-screen] .equipment-card .equipment-actions{gap:6px;margin-top:6px}
+  body[data-screen] .equipment-card .equipment-actions button{min-height:36px;font-size:13px;padding:6px 12px}
+body[data-screen] .inventory-title{display:none!important}
+  body[data-screen] main{padding:10px 18px;max-height:100dvh}
+  body[data-screen] main>header{min-height:44px;margin-bottom:6px}
+  body[data-screen] #settings{width:44px;min-height:44px;height:44px}
+  body[data-screen] #home{grid-template-columns:.85fr 1.15fr;grid-template-rows:auto auto auto auto;gap:8px 24px;align-content:center;overflow:hidden}
+  body[data-screen] #home #site-name{align-self:end}
+  body[data-screen] #home #state-note{align-self:start;font-size:13px}
+  body[data-screen] #home .command-grid{align-self:center;gap:8px}
+  body[data-screen] #home .command{min-height:80px;padding:8px}
+  body[data-screen] #home .command .lock-icon{display:block;width:22px;height:22px;margin:0 auto 5px}
+  body[data-screen] #home .command>span:not(.lock-icon){font-size:19px}
+  body[data-screen] #home .disarm-span{display:flex;align-items:center;justify-content:center;gap:10px;min-height:46px}
+  body[data-screen] #home .disarm-span .lock-icon{margin:0}
+  body[data-screen] #door-status-button{padding:8px 12px;min-height:44px}
+  body[data-screen] .hub-navigation{margin-top:4px;gap:8px}
+  body[data-screen] .hub-page-buttons{border-radius:18px}
+  body[data-screen] .hub-tab{min-height:44px;padding:8px;font-size:13px}
+  body[data-screen] .hub-bottom .quiet{min-height:44px;padding:8px 12px;font-size:13px}
+  body[data-screen] #message:not(:empty){max-height:36px;font-size:12px;margin:4px 0}
+  body[data-screen] .connection-alert{min-height:0;padding:6px 12px}
+  body[data-screen] .connection-alert strong{font-size:13px}
+  body[data-screen] .connection-alert p{font-size:12px;line-height:1.35;margin:2px 0}
+  body[data-screen] .bypass-summary{min-height:44px;padding:0 10px;margin-bottom:4px}
+  body[data-screen] #bypass-text{font-size:12px}
+  body[data-screen] #standby-display{justify-content:center}
+  body[data-screen] #pin-screen{grid-template-rows:44px 1fr 1fr}
+  body[data-screen] #pin-screen .back{min-height:44px;padding:8px 16px}
+  body[data-screen] #pin-screen h1{font-size:28px}
+  body[data-screen] #unlock-form{max-height:292px}
+  body[data-screen] #pin-screen #number-pad{gap:6px 12px}
+  body[data-screen] #pin{margin-bottom:8px}
+  body[data-screen] #settings-message:empty{display:none}
+  body[data-screen] #settings-message:not(:empty){flex:none;font-size:12px;line-height:1.35;margin:6px 0;max-height:48px;overflow:auto}
+  body[data-screen] .settings-heading{margin-bottom:8px}
+  body[data-screen] #settings-overview{min-height:0;display:flex;flex:1;flex-direction:column}
+  body[data-screen] #settings-overview h1{font-size:26px;margin:0 0 8px}
+  body[data-screen] .settings-grid{grid-template-columns:repeat(3,minmax(0,1fr));overflow:auto;min-height:0;margin:0;gap:8px}
+  body[data-screen] .settings-card{min-height:100px;padding:12px;gap:5px}
+  body[data-screen] .settings-card .card-symbol{display:none}
+  body[data-screen] .settings-card strong{font-size:16px}
+  body[data-screen] #settings-panel{display:grid;grid-template-columns:.8fr 1.2fr;grid-template-rows:auto 1fr;gap:8px 24px}
+  body[data-screen] #settings-panel>h1{grid-column:1;grid-row:1;margin-top:4px}
+  body[data-screen] #settings-panel>.sub{grid-column:1;grid-row:2;font-size:14px;line-height:1.45}
+  body[data-screen] #panel-settings-form{grid-column:2;grid-row:1/-1;margin:0;padding:12px}
+  body[data-screen] #panel-settings-form label{margin:0}
+  body[data-screen] #panel-settings-form .sub{font-size:13px;line-height:1.4;margin:8px 0}
+  body[data-screen] #panel-settings-form .primary{min-height:44px;padding:10px}
+  body[data-screen] #settings-sensors{display:grid;grid-template-columns:210px minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto;gap:8px 16px;overflow:hidden}
+  body[data-screen] .sensor-toolbar{grid-column:1;grid-row:1;display:flex;flex-direction:column;justify-content:flex-start;gap:12px;margin:0;overflow:auto}
+  body[data-screen] .sensor-heading{flex-direction:row;align-items:center;justify-content:space-between;gap:8px}
+  body[data-screen] .sensor-heading h1{font-size:24px}
+  body[data-screen] #refresh-sensors{padding:8px;font-size:12px}
+  body[data-screen] #sensor-list{grid-column:2;grid-row:1;min-height:0;height:100%;gap:6px}
+  body[data-screen] #sensor-list .sensor-row{padding:8px 10px}
+  body[data-screen] #settings-sensors>.settings-actions{grid-column:2;grid-row:2;margin:0}
+  body[data-screen] #sensor-help{grid-column:1;grid-row:2;margin:0;min-width:0}
+  body[data-screen] #sensor-help summary{font-size:12px;padding:12px 0}
+  body[data-screen] #settings-sensors:has(#sensor-help[open]) :is(.sensor-toolbar,#sensor-list,.settings-actions){display:none}
+  body[data-screen] #sensor-help[open]{grid-column:1/-1;grid-row:1/-1;overflow:auto;padding-right:8px}
+  body[data-screen] #sensor-review{grid-column:1/-1;grid-row:1/-1;margin:0;overflow:auto}
+  body[data-screen] .inventory-title{gap:16px}
+  body[data-screen] .equipment-list{gap:10px}
+  body[data-screen] .equipment-card{padding:12px}
+  body[data-screen] #cameras{display:grid;grid-template-columns:180px minmax(0,1fr);grid-template-rows:auto 1fr auto;gap:6px 20px;text-align:left}
+  body[data-screen] #cameras h1{grid-column:1;grid-row:1}
+  body[data-screen] #cameras>.sub{grid-column:1;grid-row:2}
+  body[data-screen] #cameras>.hub-pending{grid-column:1;grid-row:3;margin:0;font-size:12px}
+  body[data-screen] #hub-camera-list{grid-column:2;grid-row:1/-1;height:100%;gap:8px}
+  body[data-screen] .hub-device{padding:12px}
+  /* Keep dialog actions in reach on the landscape touchscreen. */
+  body[data-screen] .wifi-dialog{width:min(690px,calc(100vw - 24px));padding:14px 20px;max-height:calc(100dvh - 24px)}
+  body[data-screen] .wifi-dialog h2{font-size:26px;line-height:1.1}
+  body[data-screen] #wifi-site{font-size:12px;line-height:1.3;margin:0 0 8px}
+  body[data-screen] #wifi-pin-form{display:grid;grid-template-columns:1fr 1.15fr;grid-template-rows:auto 44px 1fr;gap:8px 20px;max-width:none;margin:0}
+  body[data-screen] #wifi-pin-form>label{grid-column:1;grid-row:1;text-align:left;margin:0;align-self:end}
+  body[data-screen] #wifi-pin{grid-column:1;grid-row:2;margin:0}
+  body[data-screen] #wifi-number-pad{grid-column:2;grid-row:1/4;margin:0;gap:5px}
+  body[data-screen] #wifi-number-pad button{height:44px;min-height:44px}
+  body[data-screen] #wifi-submit{grid-column:1;grid-row:3;align-self:end;min-height:44px;padding:10px}
+  body[data-screen] #wifi-close{position:sticky;bottom:0;background:#293f61;min-height:44px;padding:10px}
+  body[data-screen] .wifi-list{grid-template-columns:repeat(2,minmax(0,1fr));max-height:min(50dvh,calc(100dvh - 220px))}
+  body[data-screen] .wifi-network{padding:12px}
+  body[data-screen] #speedtest-dialog[open]{display:grid;grid-template-columns:1fr 1.1fr;gap:8px 22px;width:min(690px,calc(100vw - 24px));padding:16px 20px;max-height:calc(100dvh - 24px)}
+  body[data-screen] #speedtest-dialog>.eyebrow{display:none}
+  body[data-screen] #speedtest-title{grid-column:1;grid-row:1;font-size:25px;margin:0}
+  body[data-screen] #speedtest-gateway{grid-column:1;grid-row:2;margin:0;font-size:13px}
+  body[data-screen] #speedtest-description{grid-column:1;grid-row:3;font-size:13px;line-height:1.4;margin:0}
+  body[data-screen] #speedtest-phase{grid-column:2;grid-row:1;margin:0;font-size:18px}
+  body[data-screen] #speedtest-results{grid-column:2;grid-row:2/5;align-self:center;min-width:0}
+  body[data-screen] #speedtest-message{grid-column:1;grid-row:4;font-size:13px;line-height:1.4;margin:0}
+  body[data-screen] .speedtest-metrics{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:0}
+  body[data-screen] .speedtest-metrics>div,body[data-screen] .speedtest-metrics>div:last-child{grid-column:auto;display:block;padding:10px 8px}
+  body[data-screen] .speedtest-metrics dt{font-size:11px}
+  body[data-screen] .speedtest-metrics dd,body[data-screen] .speedtest-metrics>div:last-child dd{font-size:22px;margin:4px 0 0}
+  body[data-screen] .speedtest-metrics small{display:block;font-size:11px;margin:0}
+  body[data-screen] #speedtest-start{grid-column:1;grid-row:5;min-height:44px;padding:10px}
+  body[data-screen] #speedtest-close{grid-column:2;grid-row:5;min-height:44px;padding:10px;margin:0}
+}
+
+#home .home-heading{display:flex;align-items:center;justify-content:center;gap:18px;width:100%;max-width:600px}
+#home .home-title{min-width:0}
+#home #door-status-button{width:auto;flex:none;margin:0;white-space:nowrap}
+
+/* Short landscape panels keep alarm and PIN controls in a centered,
+   fixed-height layout above the dock. */
+@media (min-width:600px) and (max-height:560px){
+  /* Alarm: compact heading, larger controls, and a slim status line below. */
+  body[data-screen] #home:not([hidden]){container:alarm-home / size;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;text-align:center;gap:8px;overflow:hidden;padding:8px 0;position:relative}
+  body[data-screen] #home .home-heading{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;width:100%;max-width:600px;min-height:48px}
+  body[data-screen] #home .home-title{grid-column:2;display:flex;flex-direction:column;gap:4px;min-width:0}
+  body[data-screen] #home #site-name{font-size:11px;margin:0}
+  body[data-screen] #home #home-lock{display:none!important}
+  body[data-screen] #home h1{font-size:28px;margin:0;line-height:1.1}
+  body[data-screen] #home #door-status-button{grid-column:3;grid-row:1;justify-self:end;width:auto;min-height:44px;padding:8px 12px;font-size:13px;margin:0;white-space:nowrap}
+  body[data-screen] #home #state-note{order:0;flex:none;width:100%;max-width:600px;max-height:48px;overflow:auto;align-self:center;margin:0;font-size:12px;line-height:16px;opacity:.8}
+  body[data-screen] #home #finish-protection{grid-column:1;grid-row:1;justify-self:start;align-self:center;margin:0;min-height:44px}
+  body[data-screen] #home .command-grid{container:alarm-controls / size;flex:1 1 auto;min-height:104px;max-height:228px;grid-template-rows:minmax(0,1.08fr) minmax(0,1fr);align-content:stretch;width:100%;max-width:600px;margin:0;gap:10px}
+  body[data-screen] #home .command{min-height:44px;height:100%;padding:8px;font-size:22px;border-radius:20px}
+  body[data-screen] #home .command>span:not(.lock-icon){font-size:22px;margin:0}
+  body[data-screen] #home .command.disarm-span{min-height:44px}
+  body[data-screen] #home .command-grid:not(:has(.arm:not([hidden]))){grid-template-rows:minmax(44px,1fr);max-height:140px;min-height:44px}
+  /* PIN: center the title and a bounded keypad together, with equal breathing
+     room above and below. Shrink only when banners need the available space. */
+  body[data-screen] #pin-screen:not([hidden]){display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:0;text-align:center;overflow:hidden;min-height:0;container:pin-screen / size}
+  body[data-screen] #pin-screen .back{position:absolute;top:8px;left:12px;min-height:32px;padding:4px 12px;font-size:14px}
+  body[data-screen] #pin-screen .eyebrow{display:none!important}
+  body[data-screen] #pin-screen h1{font-size:26px;margin:0;text-align:center;width:100%;line-height:1.1;flex:none}
+  body[data-screen] #pin-screen .sub{display:none!important}
+  body[data-screen] #unlock-form{width:100%;max-width:420px;flex:0 1 312px;max-height:312px;height:auto;padding:8px 12px;display:flex;flex-direction:column}
+  body[data-screen] #pin{height:46px;margin:0 0 8px;font-size:26px;flex:none}
+  body[data-screen] #pin-screen #number-pad{gap:8px;margin:0;display:grid;grid-template-columns:repeat(3,1fr);flex:1;min-height:0}
+  body[data-screen] #pin-screen .number-pad button{min-height:44px;height:100%;font-size:24px;border-radius:16px}
+  body[data-screen] #pin-screen .number-pad button:nth-child(10){font-size:15px}
+  body[data-screen] #unlock-button{min-height:44px;margin-top:6px;flex:none}
+  /* Countdown: a little bigger on the kiosk screen. */
+  body[data-screen] #sleep .countdown-face{width:clamp(110px,54cqh,184px);flex:none}
+  body[data-screen] #sleep .countdown-value{font-size:clamp(52px,23cqh,74px)}
+}
+
+/* A reconnect banner can leave less room than two usable button rows. */
+@container alarm-home (max-height:210px){
+  body[data-screen] #home .command-grid:has(.arm:not([hidden])){grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:minmax(44px,1fr);min-height:44px;max-height:90px;gap:8px}
+  body[data-screen] #home .command.disarm-span{grid-column:auto}
+  body[data-screen] #home .command>span:not(.lock-icon){font-size:18px}
+}
+/* When a warning takes vertical space, keep labels beside their icons. */
+@container alarm-controls (max-height:160px){
+  body[data-screen] #home .command.arm{display:flex;align-items:center;justify-content:center;gap:10px}
+  body[data-screen] #home .command.arm .lock-icon{margin:0;flex:none}
+}
+/* Connection/countdown banners reduce the space available to the PIN screen.
+   Compress its spacing, keeping every key at least 44px and within the panel. */
+@container pin-screen (max-height:300px){
+  body[data-screen] #pin-screen h1{font-size:24px;margin:0}
+  body[data-screen] #unlock-form{padding:4px 12px}
+  body[data-screen] #pin{height:40px;margin-bottom:4px}
+  body[data-screen] #pin-screen #number-pad{gap:4px 8px}
+}
+@container pin-screen (max-height:280px){
+  body[data-screen] #pin-screen h1{font-size:20px}
+  body[data-screen] #unlock-form{padding:2px 12px}
+  body[data-screen] #pin{height:32px}
+  body[data-screen] #pin-screen #number-pad{gap:2px 8px}
+}
+
+/* Systems: one fixed toolbar, a full-height device list, and a fixed dock. */
+body[data-screen] #systems{width:100%;max-width:none;min-height:0;padding:0;overflow:hidden;justify-content:flex-start;gap:6px}
+#systems .systems-toolbar{display:flex;align-items:center;gap:12px;width:100%;flex:none}
+#systems .systems-tabs{display:flex;flex:1;min-width:0;gap:4px;margin:0;padding:3px;border:1px solid #ffffff24;border-radius:999px;background:#ffffff08}
+#systems .systems-tab{flex:1;min-width:0;min-height:44px;padding:6px 18px;font-size:14px;font-weight:600;border-radius:999px;border:1px solid transparent;background:transparent;color:#d3dee9}
+#systems .systems-tab.is-active{background:#b5e3ff;border-color:#d5efff88;color:#071726;box-shadow:0 2px 12px #0002}
+#systems .systems-refresh{flex:none;width:110px}
+#systems .systems-refresh button{width:100%;min-height:44px;padding:8px 12px;font-size:13px}
+#systems[data-subtab="power"] #hub-network-refresh,
+#systems:not([data-subtab="power"]) #hub-power-refresh{display:none}
+#systems .systems-group{display:flex;flex-direction:column;flex:1;min-height:0;min-width:0;width:100%;margin:0;padding:0;text-align:left;overflow:hidden}
+#systems .inventory-status{font-size:12px;line-height:1.35;margin:0 2px 6px;opacity:1}
+#systems .inventory-site{display:flex;align-items:center;gap:8px;margin:0 2px 6px;font-size:12px}
+#systems .inventory-site select{flex:1;width:auto;min-width:0;min-height:44px;margin:0;padding:8px 12px;font-size:14px}
+#systems .systems-group .equipment-list{flex:1;min-height:0;max-height:none;grid-auto-rows:max-content;align-items:start;gap:8px;margin:0;padding:2px 2px 6px;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+#systems .equipment-card{min-height:0;padding:10px 12px;border-radius:16px}
+#systems .equipment-heading{gap:8px}
+#systems .equipment-identity strong{font-size:15px;line-height:1.3}
+#systems .equipment-card .equipment-meta{font-size:12px;line-height:1.35;margin-top:3px}
+#systems .equipment-controls{gap:6px;margin-top:6px}
+#systems .equipment-button{min-height:44px;padding:8px 14px;font-size:13px}
+#systems .equipment-ports{margin-top:4px}
+#systems .equipment-ports summary{min-height:44px;padding:12px 0}
+#systems .equipment-row{gap:8px;padding-top:8px;margin-top:8px}
+#systems .equipment-row .equipment-controls{margin-top:0}
+/* Power uses the same small cards as Network, grouped under a slim device header. */
+#systems .power-device{grid-column:1/-1;min-width:0}
+#systems .power-device-heading{display:flex;align-items:center;gap:12px;margin:0 2px 6px}
+#systems .power-device-heading>.equipment-heading{flex:1;min-width:0;align-items:center}
+#systems .power-device-heading>.equipment-controls{flex:none;margin:0}
+#systems .power-outlets{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+#systems .power-outlet{min-width:0;height:100%;padding:5px 10px}
+#systems .power-outlet .equipment-heading{align-items:center;min-height:24px}
+#systems .power-outlet .equipment-controls{margin-top:4px}
+#systems .power-outlet .equipment-control-note{margin-top:6px}
+#systems .power-device>.equipment-control-note{margin:6px 2px 0}
+@media(max-width:599px){
+  #systems .power-outlets{grid-template-columns:minmax(0,1fr)}
+  #systems .power-device-heading{flex-wrap:wrap}
+  #systems .power-device-heading>.equipment-heading{flex-basis:100%}
+}
+body[data-screen] #systems .hub-pending{display:block!important;font-size:12px;line-height:1.3;margin:6px 2px 0}
+body[data-screen] #systems .hub-pending:empty{display:none!important}
+#systems .systems-group-head{display:flex;align-items:center;gap:8px;margin:0 0 6px}
+#systems .network-tools{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;width:100%;margin:0}
+#systems .network-tools button{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:8px;min-width:0;min-height:110px;padding:18px;text-align:left;border-radius:18px}
+#systems .network-tools strong{font-size:16px;font-weight:600}
+#systems .network-tools span{font-size:12px;font-weight:400;line-height:1.4;color:var(--muted)}
+#systems .wifi-content{flex:1;min-height:0;overflow:auto}
+body[data-screen="systems"] main>footer{display:none}
+body[data-screen="systems"] #hub-navigation{padding:0;margin-top:6px}
+body[data-screen="systems"] #hub-navigation .hub-page-buttons{padding:4px 6px}
+body[data-screen="systems"] #hub-navigation button{min-height:44px}
+@media (min-width:600px){
+  body[data-screen] #systems .equipment-list{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:450px){
+  #systems .systems-toolbar{gap:6px}
+  #systems .systems-tab{padding:6px 8px;font-size:13px}
+  #systems .systems-refresh{width:98px}
+}
+
+/* Siren setup keeps discovery, device selection and Save within the panel. */
+body[data-screen] #settings-sirens{display:grid;grid-template-columns:minmax(180px,.8fr) minmax(0,1.2fr);grid-template-rows:auto minmax(0,1fr) auto;flex:1;min-height:0;gap:10px 18px;overflow:hidden}
+body[data-screen] #settings-sirens>.settings-title{grid-column:1/-1;margin:0}
+body[data-screen] #settings-sirens h1{margin:0;font-size:26px}
+body[data-screen] #refresh-sirens{min-height:44px;padding:8px 14px;font-size:14px}
+body[data-screen] .siren-options{grid-column:1;grid-row:2/-1;min-height:0;overflow:auto}
+body[data-screen] .siren-options .sub{font-size:13px;line-height:1.4;margin:0 0 10px}
+body[data-screen] .siren-options label{font-size:13px;margin:0 0 8px}
+body[data-screen] #siren-duration{margin:6px 0 0;min-height:44px;padding:8px 12px;font-size:14px}
+body[data-screen] #siren-list{grid-column:2;grid-row:2;display:grid;align-content:start;grid-auto-rows:max-content;min-height:0;margin:0;overflow:auto;gap:8px}
+body[data-screen] .siren-row{display:flex;align-items:center;gap:12px;margin:0;padding:12px;min-height:64px;border-radius:16px;cursor:pointer}
+body[data-screen] .siren-row input{width:26px;height:26px;flex:none;margin:0;accent-color:#b5e3ff}
+body[data-screen] .siren-row strong{font-size:16px;overflow-wrap:anywhere}
+body[data-screen] .siren-row .sub{font-size:12px;margin:4px 0 0}
+body[data-screen] #settings-sirens>.settings-actions{grid-column:2;grid-row:3;margin:0}
+body[data-screen] #settings-sirens .primary{min-height:44px;padding:10px;font-size:14px}
+body[data-screen] #siren-review{grid-column:1/-1;grid-row:2/-1;min-height:0;margin:0;display:flex;flex-direction:column;gap:8px;overflow:hidden}
+body[data-screen] #siren-review h2{font-size:21px;margin:0}
+body[data-screen] #siren-review-detail{flex:1;min-height:0;overflow:auto;font-size:15px}
+body[data-screen] #siren-review-detail p{margin:0}
+body[data-screen] #siren-review>.small{font-size:12px;margin:0}
+body[data-screen] #siren-review .settings-actions{flex:none;margin:0}
+body[data-screen] #siren-review .quiet{min-height:44px;padding:8px 16px}
+body[data-screen] #settings-sirens:has(#siren-review:not([hidden]))>:is(.siren-options,#siren-list,.settings-actions){display:none}
+body[data-screen="setup-screen"]:has(#settings-sirens:not([hidden])) #entry-observation{display:none}
+@media(max-width:560px){
+  body[data-screen] #settings-sirens{display:flex;flex-direction:column;overflow:auto}
+  body[data-screen] .siren-options{flex:none}
+  body[data-screen] #siren-list{flex:1;min-height:80px}
+}

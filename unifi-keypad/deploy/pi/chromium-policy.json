@@ -1,0 +1,8 @@
+{
+  "PasswordManagerEnabled": false,
+  "BrowserSignin": 0,
+  "DeveloperToolsAvailability": 2,
+  "PrintingEnabled": false,
+  "DownloadRestrictions": 3,
+  "DefaultNotificationsSetting": 2
+}

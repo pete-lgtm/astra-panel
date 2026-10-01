@@ -1,0 +1,43 @@
+{
+	email {$ACME_EMAIL}
+	admin off
+}
+
+{$ASTRA_DOMAIN} {
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options nosniff
+		Referrer-Policy no-referrer
+		-Server
+	}
+	request_body {
+		max_size 4KB
+	}
+
+	# The only public machine route verifies per-device HMAC, time and nonce.
+	@heartbeat {
+		path /api/v1/heartbeat
+		method POST
+	}
+	handle @heartbeat {
+		reverse_proxy portal:8000 {
+			header_up -X-Forwarded-Email
+			header_up -X-Forwarded-User
+			header_up -X-Auth-Request-Email
+			header_up -Authorization
+			header_up -Cookie
+		}
+	}
+	handle {
+		# All browser pages/API routes go through OIDC. There is no direct
+		# public portal port, trusted-IP bypass, or basic-auth fallback.
+		reverse_proxy auth:4180 {
+			header_up -X-Forwarded-Email
+			header_up -X-Forwarded-User
+			header_up -X-Forwarded-Groups
+			header_up -X-Forwarded-Preferred-Username
+			header_up -X-Auth-Request-Email
+			header_up -Authorization
+		}
+	}
+}

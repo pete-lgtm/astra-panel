@@ -1,0 +1,10 @@
+{
+  "name": "Customer home",
+  "profile": "REPLACE_WITH_EXACT_PROFILE_NAME",
+  "doors": ["REPLACE_WITH_EXACT_SENSOR_NAME"],
+  "webhooks": {
+    "arm": "REPLACE_WITH_ARM_WEBHOOK_UUID",
+    "disarm": "REPLACE_WITH_DISARM_WEBHOOK_UUID",
+    "entry_alert": "REPLACE_WITH_DELAYED_ALERT_WEBHOOK_UUID"
+  }
+}

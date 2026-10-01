@@ -1,0 +1,31 @@
+[Unit]
+Description=Loxicom keypad controller
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+User=loxicom
+Group=loxicom
+WorkingDirectory=/opt/loxicom/current
+Environment=KEYPAD_APPLIANCE=1
+Environment=KEYPAD_STATE_DIR=/var/lib/loxicom/keypad
+Environment=KEYPAD_WEB_BIND=auto
+Environment=KEYPAD_WEB_LANDING_PORT=8080
+Environment=PYTHONDONTWRITEBYTECODE=1
+EnvironmentFile=-/etc/loxicom/keypad.env
+ExecStart=/usr/bin/python3 -u /opt/loxicom/current/server.py
+Restart=always
+RestartSec=3
+UMask=0077
+StateDirectory=loxicom/keypad
+StateDirectoryMode=0700
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/loxicom/keypad
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+CapabilityBoundingSet=
+
+[Install]
+WantedBy=multi-user.target

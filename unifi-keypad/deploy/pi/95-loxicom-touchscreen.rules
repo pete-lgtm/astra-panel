@@ -1,0 +1,4 @@
+# Match the Touch Display 2's touch coordinates to the 90-degree output transform.
+# Cage 0.3.1 / wlroots 0.20 no longer consumes libinput's old WL_OUTPUT property.
+# Apply rotation once in libinput, clearing output mapping to avoid double rotation.
+SUBSYSTEM=="input", KERNEL=="event*", ENV{ID_INPUT_TOUCHSCREEN}=="1", ATTRS{name}=="*Goodix Capacitive TouchScreen", ENV{WL_OUTPUT}="", ENV{LIBINPUT_CALIBRATION_MATRIX}="0 -1 1 1 0 0"

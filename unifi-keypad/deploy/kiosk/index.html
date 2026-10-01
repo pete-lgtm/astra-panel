@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#080d24">
+  <title>Astra · Waking up</title>
+  <link rel="stylesheet" href="./recovery.css">
+  <script defer src="./aurora.js"></script>
+  <script defer src="./recovery.js"></script>
+</head>
+<body data-phase="starting">
+  <main id="recovery">
+    <div class="ambient ambient-blue" aria-hidden="true"></div>
+    <div class="ambient ambient-violet" aria-hidden="true"></div>
+    <header><span class="wordmark">ASTRA</span><span class="device-label">YOUR HOME, IN SYNC</span></header>
+    <section class="welcome" aria-labelledby="title">
+      <div class="aurora-orb" id="aurora-orb">
+        <div class="ring-fallback" aria-hidden="true"></div>
+        <canvas id="aurora-ring" width="600" height="600" aria-hidden="true"></canvas>
+        <div class="orb-name"><h1 id="title">ASTRA</h1><span>COMING ALIVE</span></div>
+      </div>
+      <p id="detail">A little light. A connected home.</p>
+      <div class="loading" role="status" aria-live="polite"><span class="status-dot" aria-hidden="true"></span><span id="loading-label">WAKING UP YOUR PANEL</span></div>
+      <aside id="notice" hidden>Alarm status isn’t available here yet. Use UniFi Protect to check or disarm your system.</aside>
+    </section>
+    <footer><span id="preview-label" hidden>ANIMATED STARTUP PREVIEW</span><button id="boot-continue" type="button" hidden>Open panel <span aria-hidden="true">→</span></button></footer>
+  </main>
+  <iframe id="keypad" title="Astra home controls" hidden></iframe>
+</body>
+</html>

@@ -1,0 +1,20 @@
+[Unit]
+Description=Loxicom keypad recovery screen
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+User=loxicom-kiosk
+Group=loxicom-kiosk
+ExecStart=/usr/bin/python3 -B /opt/loxicom/recovery/recovery.py
+Restart=always
+RestartSec=2
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+RestrictAddressFamilies=AF_INET AF_UNIX
+CapabilityBoundingSet=
+
+[Install]
+WantedBy=multi-user.target

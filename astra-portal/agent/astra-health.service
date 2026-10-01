@@ -1,0 +1,37 @@
+[Unit]
+Description=Astra outbound fleet health (no remote commands)
+Wants=network-online.target
+After=network-online.target
+# No dependency relationship to loxicom-keypad.service.
+
+[Service]
+Type=simple
+DynamicUser=yes
+LoadCredential=enrollment.json:/etc/astra/enrollment.json
+ExecStart=/usr/bin/python3 /opt/astra-health/agent/health_agent.py
+Restart=on-failure
+RestartSec=60
+TimeoutStopSec=10
+Nice=15
+CPUQuota=5%
+MemoryMax=48M
+TasksMax=12
+NoNewPrivileges=yes
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectSystem=strict
+ProtectHome=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+ProtectClock=yes
+RestrictSUIDSGID=yes
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+CapabilityBoundingSet=
+UMask=0077
+InaccessiblePaths=-/var/lib/loxicom -/etc/loxicom
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

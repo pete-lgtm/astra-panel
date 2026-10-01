@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+.DS_Store
+*.pyc
+.env
+var/
+private/
+*.sqlite3*
+deploy/operators.txt
+deploy/secrets/
+deploy/.env
+artifacts/

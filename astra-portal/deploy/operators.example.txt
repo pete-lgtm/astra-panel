@@ -1,0 +1,2 @@
+# Replace with specific support operator email addresses, one per line.
+# No wildcard domains. Enforce MFA for these accounts at the identity provider.

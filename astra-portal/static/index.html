@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Astra · Fleet</title>
+  <link rel="icon" href="/assets/mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/portal.css">
+  <script src="/assets/portal.js" defer></script>
+</head>
+<body>
+  <aside class="sidebar">
+    <a class="brand" href="/" aria-label="Astra fleet home"><img src="/assets/mark.svg" alt=""><span>ASTRA<small>BY LOXICOM</small></span></a>
+    <div class="workspace-label">SUPPORT WORKSPACE</div>
+    <nav aria-label="Workspace">
+      <button class="nav-item active" data-page="fleet"><span class="nav-icon">▦</span>Panels <span class="nav-count" id="nav-count">—</span></button>
+      <button class="nav-item" data-page="updates"><span class="nav-icon">↥</span>Software</button>
+      <button class="nav-item" data-page="support"><span class="nav-icon">◎</span>Remote support</button>
+      <button class="nav-item" data-page="activity"><span class="nav-icon">↺</span>Activity</button>
+    </nav>
+    <div class="sidebar-bottom"><div class="cloud-mark"><span class="dot"></span> <span id="cloud-status">Cloud preparation</span></div><p>Astra fleet workspace</p><div class="operator"><span class="avatar">A</span><div><strong id="operator">Astra support</strong><small id="session-type">Private workspace</small></div></div></div>
+  </aside>
+  <main>
+    <div class="topline"><span>Workspace <span class="breadcrumb">/ <b id="breadcrumb">Panels</b></span></span><span id="mode-pill" class="pill">Loading workspace</span></div>
+    <div class="preview-banner" id="preview-banner" hidden><span class="preview-icon">◈</span><span><strong>Interactive preview</strong> · These are sample sites. Your live panel is unchanged.</span><span class="sample-tag">SAMPLE DATA</span></div>
+    <div id="error" class="error" role="alert" hidden></div>
+    <section id="page-fleet" class="page">
+      <header class="page-header"><div><p class="eyebrow">YOUR INSTALLED PANELS</p><h1>Your panels, at a glance.</h1><p class="subheading">See what’s online. Find what needs a closer look.</p></div><button id="refresh" class="button secondary"><span aria-hidden="true">↻</span> Refresh</button></header>
+      <div class="metrics">
+        <div class="metric"><span>Total panels</span><div><strong id="total">—</strong><span class="metric-note">across your sites</span></div></div>
+        <div class="metric"><span><i class="dot good"></i> Online</span><div><strong id="online">—</strong><span class="metric-note">checking in</span></div></div>
+        <div class="metric"><span><i class="dot amber"></i> Needs attention</span><div><strong id="attention">—</strong><span class="metric-note" id="attention-note">health & connection</span></div></div>
+      </div>
+      <section class="fleet-panel" aria-label="Panel inventory">
+        <div class="table-toolbar"><div class="filter-tabs" role="group" aria-label="Filter panels"><button class="selected" data-filter="all">All panels</button><button data-filter="attention">Needs attention</button><button data-filter="offline">Offline</button></div><label class="search"><span aria-hidden="true">⌕</span><input id="search" type="search" aria-label="Search sites and panels" placeholder="Find a site or panel"></label></div>
+        <div class="table-wrap"><table><thead><tr><th>Site / panel</th><th>Connection</th><th>Software</th><th>Health</th><th>Last check-in</th><th><span class="sr-only">Details</span></th></tr></thead><tbody id="panels"></tbody></table></div>
+        <div class="table-footer"><span id="result-count">Loading panels…</span><span><i class="dot good"></i> Health refreshes every 30 seconds</span></div>
+      </section>
+      <div class="under-table"><span>HEALTH, WITHOUT INTRUSION</span><p>Device status stays here. Alarm controls stay at the home.</p></div>
+    </section>
+    <section id="page-updates" class="page" hidden>
+      <header class="page-header"><div><p class="eyebrow">SOFTWARE</p><h1>A clear path to every update.</h1><p class="subheading">Installed versions are reported by each panel.</p></div><span class="pill muted">Remote delivery not configured</span></header>
+      <div class="feature-layout"><section class="surface"><h2>Installed versions</h2><div id="versions"></div><p class="small muted-text">Offline panels show their last reported version.</p></section><section class="surface"><span class="eyebrow">PLANNED UPDATE FLOW</span><h2>Signed. Staged. Verified.</h2><ol class="steps"><li><strong>Approve a signed release</strong><span>Pick a tested version and a small pilot group.</span></li><li><strong>Wait for the right moment</strong><span>The panel checks locally for a disarmed system and no pending countdown.</span></li><li><strong>Check the result</strong><span>Confirm recovery and preserve a working version to return to.</span></li></ol><p class="boundary-note">The current live panel still uses attended updates. This portal cannot install software yet.</p></section></div>
+    </section>
+    <section id="page-support" class="page" hidden>
+      <header class="page-header"><div><p class="eyebrow">REMOTE SUPPORT</p><h1>Be there. From here.</h1><p class="subheading">A planned private connection into one customer site at a time.</p></div><span class="pill muted">Connection not configured</span></header>
+      <div class="support-route"><div><span class="route-symbol">⌘</span><strong>Your support computer</strong><small>Sign in with MFA</small></div><span class="route-line">↔</span><div><img src="/assets/mark.svg" alt=""><strong>Private support connection</strong><small>Named site · limited duration</small></div><span class="route-line">↔</span><div><span class="route-symbol">▣</span><strong>Customer’s Astra panel</strong><small>Approved local devices</small></div></div>
+      <div class="feature-layout"><section class="surface"><h2>Open the right device</h2><p>Reach an approved router, switch, camera interface or other equipment on that site’s network. Each device keeps its own sign-in and permissions.</p><div class="device-chips"><span>Gateway</span><span>Network equipment</span><span>Camera interface</span><span>Other local devices</span></div><p class="small muted-text">Some apps, including Sonos discovery, need an on-site integration or separate workspace.</p></section><section class="surface"><h2>Customer stays in control</h2><ul class="plain-list"><li>Customer enables support and can end it.</li><li>Access expires and is recorded by site and operator.</li><li>The alarm touchscreen remains available locally.</li><li>Support credentials cannot arm or disarm.</li></ul><p class="boundary-note">This workflow is a design preview. No remote access has been enabled.</p></section></div>
+    </section>
+    <section id="page-activity" class="page" hidden><header class="page-header"><div><p class="eyebrow">ACTIVITY</p><h1>The history behind the health.</h1><p class="subheading">Enrollment, first check-ins and credential revocations.</p></div></header><section class="surface" id="activity-list"></section></section>
+    <footer class="main-footer"><span>ASTRA <span class="footer-divider">/</span> YOUR HOME, IN SYNC.</span><span id="updated">Waiting for the first check-in</span></footer>
+  </main>
+  <dialog id="detail" aria-labelledby="detail-title"><div class="drawer-header"><div><p class="eyebrow">PANEL DETAILS</p><h2 id="detail-title"></h2><p id="detail-name"></p></div><button class="icon-button" id="close-detail" aria-label="Close panel details">×</button></div><div id="detail-body"></div><div class="drawer-footer"><span>Read-only diagnostics</span><button class="button secondary" id="detail-done">Done</button></div></dialog>
+</body>
+</html>

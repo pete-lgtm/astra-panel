@@ -1,0 +1,9 @@
+*
+!Dockerfile
+!requirements.lock
+!app.py
+!store.py
+!protocol.py
+!manage.py
+!static/
+!static/**

@@ -1,0 +1,2 @@
+# Preserve the upstream QR generator as vendored, including its formatting.
+unifi-keypad/qrcodegen.py linguist-vendored -whitespace

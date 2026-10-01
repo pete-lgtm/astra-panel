@@ -1,0 +1,97 @@
+name: astra-fleet
+services:
+  caddy:
+    image: caddy:2.11.4-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      ASTRA_DOMAIN: ${ASTRA_DOMAIN:?Set the public portal hostname}
+      ACME_EMAIL: ${ACME_EMAIL:?Set the certificate contact email}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    networks: [edge, backend]
+    security_opt: [no-new-privileges:true]
+    logging: &logging
+      driver: json-file
+      options: {max-size: "10m", max-file: "3"}
+
+  auth:
+    image: quay.io/oauth2-proxy/oauth2-proxy:v7.15.4
+    restart: unless-stopped
+    user: "65532:65532"
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    command:
+      - --http-address=0.0.0.0:4180
+      - --provider=oidc
+      - --scope=openid email profile
+      - --redirect-url=https://${ASTRA_DOMAIN:?}/oauth2/callback
+      - --oidc-issuer-url=${ASTRA_OIDC_ISSUER:?Configure an OIDC identity provider with MFA}
+      - --client-id=${ASTRA_OIDC_CLIENT_ID:?Register the portal with the identity provider}
+      - --client-secret-file=/run/secrets/oidc-client-secret
+      - --cookie-secret-file=/run/secrets/cookie-secret
+      - --authenticated-emails-file=/etc/astra/operators.txt
+      - --cookie-name=__Host-astra-session
+      - --cookie-secure=true
+      - --cookie-httponly=true
+      - --cookie-samesite=lax
+      - --cookie-expire=1h
+      - --cookie-refresh=15m
+      - --reverse-proxy=true
+      - --upstream=http://portal:8000
+      - --pass-user-headers=true
+      - --pass-basic-auth=false
+      - --pass-access-token=false
+      - --pass-authorization-header=false
+      - --skip-auth-strip-headers=true
+      - --skip-provider-button=true
+      - --code-challenge-method=S256
+      - --request-logging=false
+    volumes:
+      - ./operators.txt:/etc/astra/operators.txt:ro
+    secrets: [oidc-client-secret, cookie-secret]
+    networks: [edge, backend]
+    logging: *logging
+
+  portal:
+    build: ..
+    restart: unless-stopped
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    environment:
+      ASTRA_MODE: production
+      ASTRA_DATA_DIR: /var/lib/astra
+      ASTRA_OPERATORS_FILE: /etc/astra/operators.txt
+    volumes:
+      - fleet-data:/var/lib/astra
+      - ./operators.txt:/etc/astra/operators.txt:ro
+    tmpfs: [/tmp:size=16m,mode=1777]
+    networks: [backend]
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/healthz', timeout=3)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    logging: *logging
+
+networks:
+  edge: {}
+  backend:
+    internal: true
+
+volumes:
+  fleet-data: {}
+  caddy-data: {}
+  caddy-config: {}
+
+secrets:
+  oidc-client-secret:
+    file: ./secrets/oidc-client-secret
+  cookie-secret:
+    file: ./secrets/cookie-secret
