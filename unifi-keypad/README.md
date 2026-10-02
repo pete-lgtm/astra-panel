@@ -139,11 +139,13 @@ The Audio page shows large artwork with a shaded title/artist strip. Long text
 scrolls only when it overflows; reduced-motion preferences keep it still.
 Supported Sonos sources also expose Next alongside playback and room volume.
 
-When music is playing, the local lock screen shows its artwork beside the clock
-and Astra aurora. Volume, play/pause and supported track skip are available
-without entering a PIN. Swiping up still opens PIN entry. Pausing retains the
-card for up to five minutes so music can be resumed; stopped/offline playback
-returns to the clock. Exit/entry countdowns and breaches take priority.
+When music is playing, its artwork fills the local lock screen, with a shaded
+player along the bottom and small time/date labels in the top corners. Volume,
+play/pause and supported track skip are available without entering a PIN. The
+bottom swipe strip still opens PIN entry. Pausing retains the player for up to
+five minutes so music can be resumed; stopped/offline playback returns to the
+clock and Astra aurora. The aurora stops drawing while music is shown. Missing
+artwork uses a gradient backdrop. Exit/entry countdowns and breaches take priority.
 
 These controls use short-lived grants bound to the displayed room and group,
 separate from PIN sessions. They cannot arm/disarm, change settings, link rooms,
