@@ -80,6 +80,10 @@ you drag. Movements are combined over 150 milliseconds, with one request at a
 time per provider and only the latest queued level for each room or light.
 Releasing sends the final level next, without replaying intermediate positions.
 
+On the touchscreen, swipe vertically over a slider to scroll its list. Drag
+horizontally to adjust the level, or tap the track to set it when you lift your
+finger. Touching a slider does not change a level before the gesture is known.
+
 The chosen value stays steady while fresh device readings catch up. Acceptance
 alone is not treated as confirmation: after six seconds of mismatching readings,
 Astra shows the device's reported level with a notice. Failed writes discard

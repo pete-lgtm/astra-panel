@@ -306,6 +306,7 @@ el('audio-volume-slider').onchange=()=>{const room=audioVolumeRoom;audioVolumeRo
 el('audio-volume-slider').onpointerup=el('audio-volume-slider').onchange;
 el('audio-volume-slider').onpointercancel=()=>{audioLevels.cancel(audioVolumeRoom);audioVolumeRoom='';renderAudioControls();loadAudio();};
 el('audio-volume-slider').onblur=()=>{audioVolumeRoom='';renderAudioControls();};
+allowSliderScroll(el('audio-volume-slider'));
 el('audio-link-rooms').onclick=openAudioGrouping;
 el('audio-group-save').onclick=saveAudioGrouping;
 el('audio-group-close').onclick=()=>{if(!audioControlBusy){activity();closeAudioGrouping();}};
