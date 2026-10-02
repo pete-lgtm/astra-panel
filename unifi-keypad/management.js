@@ -20,6 +20,8 @@ function clearUserForm() {
   el('user-pin-pad').hidden=true;
 }
 function clearSettingsManagement() {
+  if(typeof countdownSound!=='undefined')countdownSound.cancelPreview();
+  el('test-countdown-sound').disabled=false;
   document.dispatchEvent?.(new Event('browser-pair-hide'));
   managementRevision++;clearUserForm();settingsUser=null;sensorData=null;sensorPlan=null;
   sensorSelection=new Set();sensorModes={};activityCursor=null;sirenData=null;sirenSelection=new Set();sirenPlan=null;sirenBusy=false;
@@ -57,6 +59,8 @@ async function loadSettingsSummary(current=()=>settingsOpen) {
 }
 async function openSettingsSection(section='overview') {
   if(!settingsOpen)return;
+  if(typeof countdownSound!=='undefined')countdownSound.cancelPreview();
+  el('test-countdown-sound').disabled=false;
   if(settingsSection==='connection' && section!=='connection'){
     if(typeof clearLogin==='function')clearLogin();
     el('key').value='';
@@ -85,6 +89,18 @@ el('panel-settings-form').onsubmit=event=>{
     if(!current())return;
     setAutoLock(result.autoLockSeconds);activity();
     settingsNotice(`Saved. The panel locks after ${result.autoLockSeconds/60} minute${result.autoLockSeconds===60?'':'s'} without a touch.`);
+  });
+};
+
+el('test-countdown-sound').onclick=()=>{
+  if(!settingsOpen || settingsSection!=='panel' || !settingsUser)return;
+  activity();
+  return managementTask(el('test-countdown-sound'),async current=>{
+    const result=typeof countdownSound==='undefined'?'unavailable':await countdownSound.test(current);
+    if(!current() || result==='cancelled')return;
+    settingsNotice(result==='playing'?'Listen for a short beep. If it is silent, check the connected speaker and its volume.':
+      result==='countdown'?'A countdown is already sounding. Try the sound test after it ends.':
+      'Sound is unavailable. Check the connected speaker, then tap Test sound again.');
   });
 };
 

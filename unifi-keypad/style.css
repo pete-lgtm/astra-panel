@@ -692,13 +692,16 @@ body[data-screen] .inventory-title{display:none!important}
   body[data-screen] .settings-card{min-height:100px;padding:12px;gap:5px}
   body[data-screen] .settings-card .card-symbol{display:none}
   body[data-screen] .settings-card strong{font-size:16px}
-  body[data-screen] #settings-panel{display:grid;grid-template-columns:.8fr 1.2fr;grid-template-rows:auto 1fr;gap:8px 24px}
+  body[data-screen] #settings-panel{display:grid;grid-template-columns:.8fr 1.2fr;grid-template-rows:auto auto 1fr;gap:8px 24px}
   body[data-screen] #settings-panel>h1{grid-column:1;grid-row:1;margin-top:4px}
   body[data-screen] #settings-panel>.sub{grid-column:1;grid-row:2;font-size:14px;line-height:1.45}
   body[data-screen] #panel-settings-form{grid-column:2;grid-row:1/-1;margin:0;padding:12px}
   body[data-screen] #panel-settings-form label{margin:0}
   body[data-screen] #panel-settings-form .sub{font-size:13px;line-height:1.4;margin:8px 0}
   body[data-screen] #panel-settings-form .primary{min-height:44px;padding:10px}
+  body[data-screen] #countdown-sound-settings{grid-column:1;grid-row:3;margin:0;padding:12px;align-self:start}
+  body[data-screen] #countdown-sound-settings h2{font-size:18px;margin:0}
+  body[data-screen] #countdown-sound-settings .sub{font-size:12px;line-height:1.4;margin:8px 0}
   body[data-screen] #settings-sensors{display:grid;grid-template-columns:210px minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto;gap:8px 16px;overflow:hidden}
   body[data-screen] .sensor-toolbar{grid-column:1;grid-row:1;display:flex;flex-direction:column;justify-content:flex-start;gap:12px;margin:0;overflow:auto}
   body[data-screen] .sensor-heading{flex-direction:row;align-items:center;justify-content:space-between;gap:8px}

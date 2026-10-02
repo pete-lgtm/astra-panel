@@ -1098,6 +1098,7 @@ function alarmPresentation(data) {
 }
 function renderPresentation() {
   const data = liveObservation || {}, view = alarmPresentation(data);
+  if(typeof countdownSound!=='undefined')countdownSound.update(view);
   if (view.fresh && view.state === 'disarmed') alarmTone = 'blue';
   else if (['armed','breached'].includes(view.state) || ['entry','breach'].includes(view.mode)) alarmTone = 'red';
   document.body.dataset.tone = alarmTone;

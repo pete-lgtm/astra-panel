@@ -3,10 +3,11 @@ const nodes={},requests=[],timers=[];
 function element(){return {value:'',hidden:false,children:[],dataset:{},classList:{toggle(){}},append(...items){this.children.push(...items)},replaceChildren(...items){this.children=[...items]},setAttribute(){},focus(){},scrollIntoView(){}};}
 const el=id=>nodes[id]??=element();
 const owner={id:'owner',name:'Owner',role:'admin',enabled:true,version:1};
-let users=[owner],nextResult,resolveHeld;
+let users=[owner],nextResult,resolveHeld,audioTests=0,testAudio=()=>Promise.resolve('playing');
 const sensors={connected:true,selectedIds:['old'],sensors:[{id:'old',name:'Front',state:'MISSING',isOpened:null,available:false},{id:'new',name:'Front replacement',state:'CONNECTED',isOpened:false,available:true},{id:'bad',name:'Faulty',state:'CONNECTED',isOpened:null,available:false}],message:'Choose doors',observation:{fresh:true,state:'disarmed',liveDelayEnabled:false,doors:{Front:{connected:true,position:'closed'}},verifiedDoors:[]}};
 const context=vm.createContext({document:{getElementById:el,createElement:element,querySelectorAll:()=>[]},performance:{now:()=>1},setInterval:fn=>timers.push(fn),Date,Set,Math,
   settingsOpen:true,settingsGeneration:1,liveObservation:null,
+  activity(){},countdownSound:{cancelPreview(){},test:current=>{audioTests++;return testAudio(current)}},
   text:(id,value)=>{el(id).textContent=value},el,
   message(value){el('message').textContent=value},
   lock(){context.settingsOpen=false;context.settingsGeneration++;vm.runInContext('clearSettingsManagement()',context)},
@@ -61,5 +62,15 @@ const combined=node=>[node.textContent||'',...node.children.map(combined)].join(
   nextResult=()=>new Promise(resolve=>resolveHeld=resolve);
   const late=run("openSettingsSection('users')");context.lock();resolveHeld({users:[owner]});await late;
   assert.deepEqual(el('user-list').children,[],'Late responses cannot restore settings after lock');
+  await el('test-countdown-sound').onclick();assert.equal(audioTests,0,'A sound test needs the visible unlocked settings page');
+  context.settingsOpen=true;await run("openSettingsSection('panel')");
+  let resolveAudio;testAudio=()=>new Promise(resolve=>{resolveAudio=resolve});
+  const oldTest=el('test-countdown-sound').onclick();assert.equal(el('test-countdown-sound').disabled,true);
+  await run("openSettingsSection('overview')");resolveAudio('playing');await oldTest;
+  assert.equal(el('settings-message').textContent,'','Late test replies cannot overwrite another settings page');
+  await run("openSettingsSection('panel')");assert.equal(el('test-countdown-sound').disabled,false,'Returning to Panel must allow another sound test');
+  testAudio=()=>Promise.resolve('playing');const beforeTest=requests.length;
+  await el('test-countdown-sound').onclick();assert.equal(requests.length,beforeTest,'Testing sound never sends an alarm or device request');
+  assert.match(el('settings-message').textContent,/Listen for a short beep/);
   console.log('Management: user edits, PIN clearing, self-change lock, activity status, sensor review/replacement and stale-response checks passed.');
 })().catch(error=>{console.error(error);process.exitCode=1});
