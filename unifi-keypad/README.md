@@ -66,12 +66,24 @@ with releases. Disconnect removes Astra's local connection; it does not revoke
 the bridge's application authorization. That can be removed in Hue separately.
 
 Failed reads disable stale controls. Writes are never automatically retried;
-Astra reads the bridge again after each request. Lighting does not need UniFi
+Astra reads the bridge again after an adjustment settles. Lighting does not need UniFi
 sign-in and bridge network operations do not hold the alarm controller lock.
 
 Only Philips Hue is currently implemented. **Lutron is the only other planned
 lighting integration**; its connection method will depend on the installed
 processor. There is no generic third-party lighting connector.
+
+## Volume and brightness sliders
+
+Sliders show your chosen level immediately and start adjusting the device while
+you drag. Movements are combined over 150 milliseconds, with one request at a
+time per provider and only the latest queued level for each room or light.
+Releasing sends the final level next, without replaying intermediate positions.
+
+The chosen value stays steady while fresh device readings catch up. Acceptance
+alone is not treated as confirmation: after six seconds of mismatching readings,
+Astra shows the device's reported level with a notice. Failed writes discard
+queued changes; locking or leaving the screen also cancels unsent changes.
 
 ## Stored state and access
 

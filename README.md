@@ -4,7 +4,7 @@ An open-source touchscreen hub for your home: UniFi Protect alarms, network and 
 
 Astra runs locally on a Raspberry Pi. Its landscape interface includes a breathing aurora lock screen, swipe-to-unlock, a PIN keypad, and compact controls designed for touch.
 
-**Status:** working prototype, version **0.2.54**. Hardware and UniFi compatibility need to be checked for each installation. This is not a certified alarm system or a monitored emergency service.
+**Status:** working prototype, version **0.2.55**. Hardware and UniFi compatibility need to be checked for each installation. This is not a certified alarm system or a monitored emergency service.
 
 ## What it does
 

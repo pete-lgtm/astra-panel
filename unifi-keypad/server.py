@@ -981,6 +981,7 @@ class Handler(BaseHTTPRequestHandler):
         files['/web-setup.css'] = ('web_setup.css', 'text/css')
         files['/management.js'] = ('management.js', 'text/javascript')
         files['/astra.css'] = ('astra.css', 'text/css')
+        files['/level-control.js'] = ('level-control.js', 'text/javascript')
         files['/audio.js'] = ('audio.js', 'text/javascript')
         files['/lighting.js'] = ('lighting.js', 'text/javascript')
         files['/lighting.css'] = ('lighting.css', 'text/css')

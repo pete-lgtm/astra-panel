@@ -13,6 +13,7 @@ const ctx=vm.createContext({Map,document:{hidden:false,addEventListener(){}},el,
   async call(path,body){requests.push({path,body});if(path==='/hub/audio/artwork'){if(holdArt)await new Promise(resolve=>artPending.set(body.artworkId,resolve));return {artworkId:body.artworkId,image:badArt?'data:image/svg+xml;base64,AAAA':cover};}if(hold)await new Promise(resolve=>resolveRead=resolve);if(fail)throw Error('offline');return {state:'ready',zones:zones.map(z=>({...z}))}}
 });
 const run=s=>vm.runInContext(s,ctx),flush=()=>new Promise(resolve=>setImmediate(resolve));
+run(fs.readFileSync('level-control.js','utf8'));
 run(fs.readFileSync('audio.js','utf8'));
 (async()=>{
   assert.equal(requests.length,0,'No discovery outside Audio');

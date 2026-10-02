@@ -3,6 +3,17 @@ let lightingData=null,lightingRoom='',lightingGeneration=0,lightingLoading=false
 let lightingSetupGeneration=0,lightingPairId='',lightingSetupBusy=false,lightingDisconnectArmed=false;
 let lightingDrag='',lightingMessage='';
 const lightingCards=new Map(),lightingRoomButtons=new Map(),lightingSceneButtons=new Map();
+const lightingLevels=createLevelControl({
+  active:()=>lightingActive()&&!lightingBusy,
+  start:()=>{clearTimeout(lightingTimer);lightingGeneration++;lightingLoading=false;lightingMessage='';},
+  send:async command=>{
+    if(command.unlock!==unlockToken)throw new Error('Unlock with your PIN again.');
+    const result=await call('/hub/lighting/control',command);
+    if(!result.accepted)throw new Error('Hue did not confirm the change. Refresh before trying again.');
+  },
+  render:()=>renderLighting(),refresh:()=>loadLighting(true),
+  failed:message=>{lightingMessage=message;lightingDrag='';}
+});
 function lightingActive(){return !!unlockToken&&activeScreen==='lighting'&&!document.hidden;}
 function lightingElement(tag,cls,value=''){return hubNode(tag,cls,value);}
 function lightingButton(name,fn){const n=lightingElement('button','',name);n.type='button';n.onclick=fn;return n;}
@@ -15,6 +26,7 @@ function closeLightingSetup(){
   el('lighting-bridges').hidden=false;el('lighting-setup-help').hidden=false;
 }
 function clearLightingHub(){
+  lightingLevels.reset();
   clearTimeout(lightingTimer);lightingGeneration++;lightingData=null;lightingRoom='';lightingLoading=false;lightingBusy=false;lightingDrag='';lightingMessage='';
   lightingCards.clear();lightingRoomButtons.clear();lightingSceneButtons.clear();closeLightingSetup();
   for(const id of ['lighting-rooms','lighting-lights','lighting-scenes'])el(id).textContent='';
@@ -22,16 +34,17 @@ function clearLightingHub(){
 }
 function syncLightingScreen(){
   clearTimeout(lightingTimer);
-  if(!lightingActive()){lightingGeneration++;lightingLoading=false;lightingBusy=false;lightingDrag='';closeLightingSetup();return;}
+  if(!lightingActive()){lightingLevels.reset();lightingGeneration++;lightingLoading=false;lightingBusy=false;lightingDrag='';closeLightingSetup();return;}
   if(!lightingLoading)loadLighting();
 }
 function renderLighting(){
+  const changing=lightingBusy||lightingLevels.busy();
   const ready=lightingData?.state==='ready',lights=lightingData?.lights||[],rooms=lightingData?.rooms||[];
   text('lighting-summary',ready?`${lights.length} lights · ${lights.filter(l=>l.on&&l.reachable).length} on`:'Philips Hue');
   text('lighting-connect',ready?'Hue setup':'Connect Hue');
-  el('lighting-connect').disabled=!lightingCanManage()||lightingBusy;
+  el('lighting-connect').disabled=!lightingCanManage()||changing;
   el('lighting-empty-connect').disabled=!lightingCanManage();
-  el('lighting-refresh').disabled=lightingLoading||lightingBusy;
+  el('lighting-refresh').disabled=lightingLoading||changing;
   el('lighting-empty').hidden=ready&&!!lights.length;el('lighting-layout').hidden=!ready||!lights.length;
   text('lighting-empty-title',ready?'No Hue lights yet.':'Your home, in the right light.');
   text('lighting-empty-detail',ready?'Add your lights in the Hue app, then tap Refresh.':lightingMessage||'Connect a Philips Hue Bridge to bring your rooms, lights and scenes here.');
@@ -43,11 +56,11 @@ function renderLighting(){
   for(const [id,button] of lightingRoomButtons)if(!roomIds.has(id)){button.remove();lightingRoomButtons.delete(id);}
   for(const room of choices){
     let button=lightingRoomButtons.get(room.id);
-    if(!button){button=lightingButton('',()=>{if(lightingBusy)return;activity();lightingRoom=room.id;lightingDrag='';renderLighting();});button.className='lighting-room';lightingRoomButtons.set(room.id,button);el('lighting-rooms').append(button);}
-    button.textContent=room.name;button.setAttribute('aria-pressed',String(room.id===lightingRoom));button.disabled=lightingBusy;
+    if(!button){button=lightingButton('',()=>{if(button.disabled)return;activity();lightingRoom=room.id;lightingDrag='';renderLighting();});button.className='lighting-room';lightingRoomButtons.set(room.id,button);el('lighting-rooms').append(button);}
+    button.textContent=room.name;button.setAttribute('aria-pressed',String(room.id===lightingRoom));button.disabled=changing;
   }
   const selected=rooms.find(r=>r.id===lightingRoom),visible=lights.filter(l=>!selected||selected.lights.includes(l.id));
-  const usable=!!unlockToken&&!lightingBusy;
+  const usable=!!unlockToken&&!changing;
   // Whole-home switching is intentionally absent; room actions target one Hue group.
   el('lighting-room-on').disabled=el('lighting-room-off').disabled=!usable||!selected?.groupId;
   const visibleIds=new Set(visible.map(l=>l.id));
@@ -64,9 +77,15 @@ function renderLighting(){
       const level=lightingElement('div','lighting-level'),slider=lightingElement('input',''),value=lightingElement('output','');
       slider.type='range';slider.min='0';slider.max='100';slider.step='1';
       slider.onpointerdown=()=>{if(!slider.disabled)lightingDrag=light.id;};
-      slider.oninput=()=>{if(slider.disabled)return;lightingDrag=light.id;value.textContent=slider.value+'%';activity();};
-      slider.onchange=()=>{const v=Number(slider.value);lightingDrag='';if(!slider.disabled)controlLighting({id:light.id,kind:'light',action:'brightness',value:v});};
-      slider.onpointercancel=slider.onblur=()=>{lightingDrag='';renderLighting();};
+      slider.oninput=()=>{
+        if(slider.disabled)return;lightingDrag=light.id;value.textContent=slider.value+'%';activity();
+        slider.setAttribute('aria-valuetext',slider.value+' percent, updating');
+        lightingLevels.set(light.id,Number(slider.value),{unlock:unlockToken,id:light.id,kind:'light',action:'brightness',value:Number(slider.value)});
+      };
+      slider.onchange=()=>{lightingDrag='';if(!slider.disabled)lightingLevels.flush();renderLighting();};
+      slider.onpointerup=slider.onchange;
+      slider.onpointercancel=()=>{lightingLevels.cancel(light.id);lightingDrag='';renderLighting();loadLighting();};
+      slider.onblur=()=>{lightingDrag='';renderLighting();};
       level.append(slider,value);node.append(head,level);card={node,name,state,toggle,slider,value,level};lightingCards.set(light.id,card);el('lighting-lights').append(node);
     }
     card.name.textContent=light.name;card.name.title=light.name;
@@ -75,9 +94,13 @@ function renderLighting(){
     card.toggle.textContent=light.on?'On':'Off';card.toggle.setAttribute('aria-pressed',String(light.on===true));
     card.toggle.setAttribute('aria-label',(light.on?'Turn off ':'Turn on ')+light.name);
     card.toggle.disabled=!usable||!light.reachable||light.on===null;
-    card.level.hidden=!light.dimmable;card.slider.disabled=!usable||!light.reachable||light.brightness===null;
+    card.level.hidden=!light.dimmable;card.slider.disabled=!unlockToken||lightingBusy||!light.reachable||light.brightness===null;
     card.slider.setAttribute('aria-label',light.name+' brightness');
-    if(lightingDrag!==light.id){card.slider.value=String(light.on?light.brightness??0:0);card.value.textContent=light.brightness===null?'—':(light.on?light.brightness:0)+'%';}
+    if(lightingDrag!==light.id){
+      const level=lightingLevels.value(light.id,light.brightness===null?null:light.on?light.brightness:0);
+      card.slider.value=String(level??0);card.value.textContent=level===null?'—':level+'%';
+      card.slider.setAttribute('aria-valuetext',level===null?'Unavailable':level+' percent'+(lightingLevels.requested(light.id)?', updating':''));
+    }
   }
   const scenes=(lightingData.scenes||[]).filter(s=>!lightingRoom||s.roomId===lightingRoom),sceneIds=new Set(scenes.map(s=>s.id));
   for(const [id,button] of lightingSceneButtons)if(!sceneIds.has(id)){button.remove();lightingSceneButtons.delete(id);}
@@ -92,22 +115,24 @@ function renderLighting(){
 function lightingUnavailable(){
   if(lightingData?.lights)lightingData={...lightingData,lights:lightingData.lights.map(l=>({...l,reachable:false,on:null,brightness:null})),rooms:lightingData.rooms.map(r=>({...r,groupId:null})),scenes:[]};
 }
-async function loadLighting(){
-  if(!lightingActive()||lightingLoading||lightingBusy)return;
+async function loadLighting(preserveMessage=false){
+  if(!lightingActive()||lightingLoading||lightingBusy||lightingLevels.busy())return;
   clearTimeout(lightingTimer);lightingLoading=true;const generation=++lightingGeneration,grant=unlockToken;
   try{
     const data=await call('/hub/lighting',{unlock:grant});
     if(generation!==lightingGeneration||grant!==unlockToken||!lightingActive())return;
-    lightingData=data;lightingMessage='';
+    lightingData=data;if(!preserveMessage)lightingMessage='';
+    lightingLevels.reconcile(new Map((data.lights||[]).map(l=>[l.id,!l.reachable||l.brightness===null?null:l.on?l.brightness:0])));
   }catch(error){
     if(generation!==lightingGeneration||grant!==unlockToken||!lightingActive())return;
-    lightingMessage=error.message;
+    lightingLevels.reset();lightingDrag='';lightingMessage=error.message;
     lightingUnavailable();
   }
-  lightingLoading=false;renderLighting();lightingTimer=setTimeout(loadLighting,8000);
+  lightingLoading=false;renderLighting();lightingTimer=setTimeout(()=>loadLighting(),lightingLevels.pending()?1000:8000);
 }
 async function controlLighting(command){
-  if(!lightingActive()||lightingBusy)return;
+  if(!lightingActive()||lightingBusy||lightingLevels.busy())return;
+  lightingLevels.reset();
   // A background refresh must not swallow a first tap. Its late response is
   // invalidated; the server reads fresh capabilities before this one command.
   activity();clearTimeout(lightingTimer);lightingLoading=false;lightingBusy=true;lightingMessage='';renderLighting();
@@ -115,9 +140,9 @@ async function controlLighting(command){
   try{await call('/hub/lighting/control',{unlock:grant,...command});}
   catch(error){if(generation===lightingGeneration&&grant===unlockToken&&lightingActive())lightingMessage=error.message;}
   if(generation!==lightingGeneration||grant!==unlockToken||!lightingActive())return;
-  lightingBusy=false;lightingUnavailable();renderLighting();
+  lightingBusy=false;renderLighting();
   // Always verify current state; never retry a write, even after a lost reply.
-  await loadLighting();
+  await loadLighting(true);
 }
 function lightingSetupState(){
   const pairing=!!lightingPairId;

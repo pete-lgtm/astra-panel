@@ -14,7 +14,7 @@ const body=make(),ctx=vm.createContext({document:{body,getElementById:id=>nodes.
   createElement:make,addEventListener(){},querySelectorAll(){return []}},Date,Math,performance:{now:()=>1000},
   fetch:()=>new Promise(()=>{}),setInterval(){},setTimeout(){},clearTimeout(){}});
 const run=source=>vm.runInContext(source,ctx);
-for(const file of ['app.js','management.js','audio.js','lighting.js'])vm.runInContext(fs.readFileSync(file,'utf8'),ctx,{filename:file});
+for(const file of ['app.js','management.js','level-control.js','audio.js','lighting.js'])vm.runInContext(fs.readFileSync(file,'utf8'),ctx,{filename:file});
 assert.equal(body.dataset.screen,'sleep','Startup must reach the fixed lock-screen layout');
 assert.ok(nodes.get('clock').textContent,'The clock must start without waiting for a connection');
 assert.ok(nodes.get('date').textContent);
