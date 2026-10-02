@@ -40,7 +40,8 @@ async function loadStandbyCover(){
 }
 function renderStandbyAudio(){
   const zone=standbyData?.zone,visible=standbyActive()&&!!zone;
-  el('standby-music').hidden=!visible;el('sleep').dataset.music=String(visible);
+  el('standby-music').hidden=!visible;
+  if(el('sleep').dataset.music!==String(visible))el('sleep').dataset.music=String(visible);
   const actions=zone?.transportActions||[],level=standbyLevels.value(zone?.id,Number.isInteger(zone?.volume)?zone.volume:null);
   const volumeReady=visible&&!standbyBusy&&level!==null&&!zone.fixedVolume;
   const usable=visible&&!standbyBusy&&!standbyLevels.busy();

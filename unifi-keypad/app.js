@@ -1281,11 +1281,11 @@ document.addEventListener('phone-api-connected',()=>{refresh();message('Console 
   const canvas=el('lock-aurora');
   if(typeof canvas?.getContext!=='function')return;
   const context=canvas.getContext('2d');if(!context)return;
-  const screen=el('sleep'),display=el('standby-display'),time=el('clock'),status=el('standby-status');
+  const screen=el('sleep'),display=el('standby-display'),time=el('clock');
   const reduced=matchMedia('(prefers-reduced-motion: reduce)');
   let frame=0,last=0,width=0,height=0,cx=0,cy=0,radius=0,scale=1;
   let touched=-100,touchAngle=0,started=performance.now(),previousTone='';
-  const visible=()=>document.body.dataset.screen==='sleep'&&!screen.hidden&&!display.hidden&&!document.hidden&&width>0&&height>0;
+  const visible=()=>document.body.dataset.screen==='sleep'&&screen.dataset.music!=='true'&&!screen.hidden&&!display.hidden&&!document.hidden&&width>0&&height>0;
   function draw(seconds){
     if(reduced.matches)seconds=0;
     const armed=document.body.dataset.tone==='red';
@@ -1345,17 +1345,15 @@ document.addEventListener('phone-api-connected',()=>{refresh();message('Console 
   }
   function resize(){
     const box=screen.getBoundingClientRect(),clockBox=time.getBoundingClientRect(),displayBox=display.getBoundingClientRect();
-    const playerBox=el('standby-music')?.getBoundingClientRect();
-    const music=screen.dataset.music==='true'&&playerBox?.height>0;
     width=box.width;height=box.height;scale=Math.min(devicePixelRatio||1,1.25);
     canvas.width=Math.max(1,Math.round(width*scale));canvas.height=Math.max(1,Math.round(height*scale));
     const clockCenter=clockBox.top+clockBox.height/2;
-    // Music centers the clock group beside the complete artwork card.
+    // Only the idle screen draws the ring; the time remains its centerpiece.
     cx=clockBox.left+clockBox.width/2-box.left;
-    cy=music?playerBox.top+playerBox.height/2-box.top:clockCenter-box.top;
+    cy=clockCenter-box.top;
     // Reserve the full breathing/orbit envelope. The diffuse glow fades to
     // transparent before the canvas edge rather than forcing a tiny ring.
-    const targetRadius=music?Math.min(displayBox.width*.45,playerBox.height*.341):displayBox.height*.43;
+    const targetRadius=displayBox.height*.43;
     radius=Math.max(0,Math.min(targetRadius,(Math.min(cx,width-cx,cy,height-cy)-12)/1.24,230));
     if(visible())draw((performance.now()-started)/1000);
     sync();
@@ -1363,6 +1361,7 @@ document.addEventListener('phone-api-connected',()=>{refresh();message('Console 
   const observer=new MutationObserver(sync);
   observer.observe(document.body,{attributes:true,attributeFilter:['data-screen','data-tone']});
   observer.observe(display,{attributes:true,attributeFilter:['hidden']});
+  observer.observe(screen,{attributes:true,attributeFilter:['data-music']});
   if(typeof ResizeObserver==='function'){
     const sizes=new ResizeObserver(resize);sizes.observe(screen);sizes.observe(display);if(el('standby-music'))sizes.observe(el('standby-music'));
   }
