@@ -132,3 +132,22 @@ network; playback metadata, artwork and controls depend on the source/device.
 `setup_lab.py` and `rule_setup.py` are older compatibility experiments retained
 as source; normal commissioning uses `server.py` onboarding. `/lab` is a separate
 simulated entry-delay page and does not represent live alarm state.
+
+### Music artwork and lock-screen controls
+
+The Audio page shows large artwork with a shaded title/artist strip. Long text
+scrolls only when it overflows; reduced-motion preferences keep it still.
+Supported Sonos sources also expose Next alongside playback and room volume.
+
+When music is playing, the local lock screen shows its artwork beside the clock
+and Astra aurora. Volume, play/pause and supported track skip are available
+without entering a PIN. Swiping up still opens PIN entry. Pausing retains the
+card for up to five minutes so music can be resumed; stopped/offline playback
+returns to the clock. Exit/entry countdowns and breaches take priority.
+
+These controls use short-lived grants bound to the displayed room and group,
+separate from PIN sessions. They cannot arm/disarm, change settings, link rooms,
+select media or control lighting. They are served by the existing loopback-only
+app with its Host, Origin and request-token checks, and are excluded from the
+remote setup allowlist. Sonos writes retain device identity, group and live
+capability checks and are never automatically retried.

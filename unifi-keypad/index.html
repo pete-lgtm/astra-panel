@@ -1,11 +1,16 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Astra · Home</title><link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="/astra.css"><script defer src="/app.js"></script><script defer src="/management.js"></script><script defer src="/level-control.js"></script><script defer src="/audio.js"></script><script defer src="/lighting.js"></script><link rel="stylesheet" href="/lighting.css"><script src="/browser-pair.js" defer></script><link rel="stylesheet" href="/web-setup.css"></head><body><main>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Astra · Home</title><link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="/astra.css"><script defer src="/app.js"></script><script defer src="/management.js"></script><script defer src="/level-control.js"></script><script defer src="/audio.js"></script><script defer src="/standby-audio.js"></script><link rel="stylesheet" href="/music.css"><script defer src="/lighting.js"></script><link rel="stylesheet" href="/lighting.css"><script src="/browser-pair.js" defer></script><link rel="stylesheet" href="/web-setup.css"></head><body><main>
 
 <aside id="connection-alert" class="connection-alert" role="status" hidden><div><strong id="connection-alert-title">Alarm status unavailable</strong><p id="connection-alert-detail"></p></div><button id="reconnect" type="button">Reconnect UniFi</button></aside>
 <aside id="bypass-summary" class="bypass-summary" role="status" hidden><span id="bypass-text"></span><button id="bypass-details" class="quiet" type="button">Details</button></aside>
 <div id="alert-strip" class="alert-strip" role="status" hidden><span id="strip-label"></span><strong id="strip-time"></strong><button id="strip-cancel" type="button" class="strip-cancel">Disarm</button></div>
 <section id="sleep" class="screen">
   <canvas id="lock-aurora" aria-hidden="true"></canvas>
-  <div id="standby-display"><div id="clock" class="clock"></div><p id="date"></p><p id="standby-status" class="sub" aria-live="polite"><span id="standby-lock" class="lock-icon" aria-hidden="true"></span><span id="sleep-state">Status unverified</span></p></div>
+  <article id="standby-music" class="standby-music" aria-label="Lock screen music" data-no-swipe hidden>
+    <div class="standby-cover-wrap"><div id="standby-art" class="audio-art" aria-hidden="true"><span class="audio-disc"></span><span class="audio-disc-center">♪</span><img id="standby-cover" alt="" decoding="async" hidden></div><div class="standby-room"><span class="music-playing-dot" aria-hidden="true"></span><span id="standby-room-name"></span></div><div class="standby-track"><h2 id="standby-track-title"></h2><p id="standby-track-artist"></p></div></div>
+    <div class="standby-controls" role="group" aria-label="Lock screen music controls"><button id="standby-volume-down" type="button" aria-label="Lower room volume" disabled>−</button><output id="standby-volume" aria-label="Room volume">—</output><button id="standby-volume-up" type="button" aria-label="Raise room volume" disabled>+</button><span class="music-control-divider" aria-hidden="true"></span><button id="standby-play" type="button" aria-label="Pause music" disabled>Ⅱ</button><button id="standby-next" type="button" aria-label="Next song" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 5 10 7-10 7z"/><path d="M18 5v14" fill="none" stroke="currentColor" stroke-width="2.5"/></svg></button></div>
+    <p id="standby-music-notice" role="status" hidden></p>
+  </article>
+  <div id="standby-display"><span class="standby-brand">ASTRA</span><div id="clock" class="clock"></div><p id="date"></p><p id="standby-status" class="sub" aria-live="polite"><span id="standby-lock" class="lock-icon" aria-hidden="true"></span><span id="sleep-state">Status unverified</span></p></div>
   <div id="alarm-display" class="alarm-display" hidden>
     <p id="alarm-phase" class="eyebrow"></p>
     <div id="countdown-face" class="countdown-face" role="timer" aria-live="off">
@@ -67,12 +72,12 @@
         <div id="audio-art" class="audio-art" aria-hidden="true"><span class="audio-disc"></span><span id="audio-art-symbol" class="audio-disc-center">♪</span><img id="audio-cover" alt="" decoding="async" hidden></div>
         <div class="audio-track"><span id="audio-now-state" class="audio-state"></span><h2 id="audio-track-title"></h2><p id="audio-track-artist"></p><p id="audio-track-album"></p></div>
       </div>
-      <div class="audio-controls" role="group" aria-label="Selected room controls">
-        <div class="audio-transport"><button id="audio-play-pause" type="button" disabled><span id="audio-play-symbol" aria-hidden="true">▶</span><span id="audio-play-label">Play</span></button><button id="audio-stop" type="button" disabled><span aria-hidden="true">■</span> Stop</button><button id="audio-mute" type="button" aria-pressed="false" disabled>Mute</button></div>
-        <div class="audio-volume"><button id="audio-volume-down" type="button" aria-label="Lower room volume" disabled>−</button><input id="audio-volume-slider" type="range" min="0" max="100" step="1" value="0" aria-label="Room volume" disabled><output id="audio-volume-value" for="audio-volume-slider">—</output><button id="audio-volume-up" type="button" aria-label="Raise room volume" disabled>+</button></div>
-      </div>
+
     </article>
-    <div class="audio-room-column"><div class="audio-list-heading"><h2>All zones</h2><span id="audio-room-count"></span></div><div id="audio-rooms" class="audio-rooms" aria-label="Sonos rooms" data-no-swipe></div></div>
+    <div class="audio-room-column"><div class="audio-list-heading"><h2>All zones</h2><span id="audio-room-count"></span></div><div id="audio-rooms" class="audio-rooms" aria-label="Sonos rooms" data-no-swipe></div>      <div class="audio-controls" role="group" aria-label="Selected room controls">
+        <div class="audio-transport"><button id="audio-play-pause" type="button" disabled><span id="audio-play-symbol" aria-hidden="true">▶</span><span id="audio-play-label">Play</span></button><button id="audio-next" type="button" aria-label="Next song" hidden disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 5 10 7-10 7z"/><path d="M18 5v14" fill="none" stroke="currentColor" stroke-width="2.5"/></svg></button><button id="audio-stop" type="button" disabled><span aria-hidden="true">■</span> Stop</button><button id="audio-mute" type="button" aria-pressed="false" disabled>Mute</button></div>
+        <div class="audio-volume"><button id="audio-volume-down" type="button" aria-label="Lower room volume" disabled>−</button><input id="audio-volume-slider" type="range" min="0" max="100" step="1" value="0" aria-label="Room volume" disabled><output id="audio-volume-value" for="audio-volume-slider">—</output><button id="audio-volume-up" type="button" aria-label="Raise room volume" disabled>+</button></div>
+      </div></div>
   </div>
   <div id="audio-empty" class="audio-empty"><span class="audio-empty-note" aria-hidden="true">♫</span><h2 id="audio-empty-title">Finding your rooms…</h2><p id="audio-empty-detail">Looking for Sonos on your local network.</p></div>
 </section>

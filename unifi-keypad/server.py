@@ -26,6 +26,7 @@ import network_actions
 import network_wifi
 import network_speedtest
 import sonos_audio
+import standby_audio
 import hue_lighting
 import protection_state
 import door_policy
@@ -59,6 +60,7 @@ UNLOCKS = {}
 NETWORK_PLANS = {}
 NETWORK_SPEEDTESTS = network_speedtest.SpeedTests()
 SONOS_AUDIO = sonos_audio.AudioInventory()
+STANDBY_AUDIO = standby_audio.StandbyAudio(SONOS_AUDIO)
 HUE_LIGHTING = hue_lighting.HueLighting(STATE_DIR / '.lighting-hue.json')
 ARM_PLANS = {}
 STATUS_SENSORS = []
@@ -983,6 +985,8 @@ class Handler(BaseHTTPRequestHandler):
         files['/astra.css'] = ('astra.css', 'text/css')
         files['/level-control.js'] = ('level-control.js', 'text/javascript')
         files['/audio.js'] = ('audio.js', 'text/javascript')
+        files['/standby-audio.js'] = ('standby-audio.js', 'text/javascript')
+        files['/music.css'] = ('music.css', 'text/css')
         files['/lighting.js'] = ('lighting.js', 'text/javascript')
         files['/lighting.css'] = ('lighting.css', 'text/css')
         files.update({'/onboarding': ('setup_lab.html', 'text/html; charset=utf-8'), '/setup.js': ('setup_lab.js', 'text/javascript'), '/setup.css': ('setup_lab.css', 'text/css')})
@@ -1049,6 +1053,13 @@ class Handler(BaseHTTPRequestHandler):
                 return self.reply(200, hub_capabilities(data))
             if self.path == '/hub/network':
                 return self.reply(200, hub_network(data))
+            if self.path in ('/standby/audio', '/standby/audio/artwork', '/standby/audio/control'):
+                if SETTINGS_ACCESS.saved_pin() is None:
+                    raise ValueError('Finish panel setup before using music controls.')
+                action = {'/standby/audio': STANDBY_AUDIO.read,
+                          '/standby/audio/artwork': STANDBY_AUDIO.artwork,
+                          '/standby/audio/control': STANDBY_AUDIO.control}[self.path]
+                return self.reply(200, action(data))
             if self.path == '/hub/audio':
                 return self.reply(200, hub_audio(data))
             if self.path == '/hub/audio/artwork':
