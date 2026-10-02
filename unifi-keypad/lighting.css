@@ -26,7 +26,7 @@ body[data-screen] .lighting-toggle{min-height:44px;min-width:48px;padding:6px;bo
 body[data-screen] .lighting-toggle[aria-pressed="true"]{background:#ffe3a8;color:#372914;border-color:#ffedc5}
 .lighting-level{display:grid;grid-template-columns:minmax(0,1fr) 32px;gap:6px;align-items:center;height:42px}
 .lighting-level output{font-size:11px;color:#e0e8ef;text-align:right;font-variant-numeric:tabular-nums}
-.lighting-level input{appearance:none;-webkit-appearance:none;min-width:0;width:100%;height:42px;margin:0;padding:0;border:0;background:transparent;box-shadow:none;touch-action:none;accent-color:#ffe3a8}
+.lighting-level input{appearance:none;-webkit-appearance:none;min-width:0;width:100%;height:42px;margin:0;padding:0;border:0;background:transparent;box-shadow:none;touch-action:pan-y;accent-color:#ffe3a8}
 .lighting-level input::-webkit-slider-runnable-track{height:5px;background:#ffe3a835;border-radius:5px}
 .lighting-level input::-webkit-slider-thumb{appearance:none;-webkit-appearance:none;width:22px;height:22px;margin-top:-8.5px;border-radius:50%;background:#ffe3a8}
 .lighting-scenes{display:flex;gap:6px;overflow-x:auto;overscroll-behavior:contain;flex:none;min-height:44px;padding-bottom:2px}

@@ -86,6 +86,7 @@ function renderLighting(){
       slider.onpointerup=slider.onchange;
       slider.onpointercancel=()=>{lightingLevels.cancel(light.id);lightingDrag='';renderLighting();loadLighting();};
       slider.onblur=()=>{lightingDrag='';renderLighting();};
+      allowSliderScroll(slider);
       level.append(slider,value);node.append(head,level);card={node,name,state,toggle,slider,value,level};lightingCards.set(light.id,card);el('lighting-lights').append(node);
     }
     card.name.textContent=light.name;card.name.title=light.name;

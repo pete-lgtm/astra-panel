@@ -1,5 +1,69 @@
 // Immediate slider feedback, with at most one write in flight per provider.
 // Intermediate movements are replaced by the latest intent for that target.
+
+// A range must not change on touch-down: that may be the start of a scroll.
+// Pair this with touch-action:pan-y so the browser owns vertical scrolling.
+function allowSliderScroll(slider){
+  const handlers={};
+  for(const name of ['pointerdown','pointerup','pointercancel','input','change','blur'])handlers[name]=slider['on'+name];
+  let touch=null;
+  function begin(event){
+    slider.focus({preventScroll:true});
+    handlers.pointerdown?.(event);
+  }
+  function direction(event){
+    if(touch.axis)return;
+    const dx=Math.abs(event.clientX-touch.x),dy=Math.abs(event.clientY-touch.y);
+    if(Math.max(dx,dy)>=8)touch.axis=dy>=dx?'y':'x';
+  }
+  function update(event){
+    const box=slider.getBoundingClientRect(),thumb=22;
+    const fraction=Math.max(0,Math.min(1,(event.clientX-box.left-thumb/2)/Math.max(1,box.width-thumb)));
+    const min=Number(slider.min),max=Number(slider.max),step=Number(slider.step)||1;
+    const value=String(Math.max(min,Math.min(max,min+Math.round(fraction*(max-min)/step)*step)));
+    if(value===slider.value)return;
+    slider.value=value;touch.value=value;handlers.input?.(event);
+  }
+  slider.onpointerdown=event=>{
+    if(event?.pointerType!=='touch'){handlers.pointerdown?.(event);return;}
+    if(slider.disabled)return;
+    // Cancel the range's native jump-to-position, not viewport panning.
+    event.preventDefault();
+    if(event.isPrimary===false)return;
+    touch={id:event.pointerId,x:event.clientX,y:event.clientY,axis:'',value:slider.value};
+  };
+  slider.onpointermove=event=>{
+    if(!touch||event.pointerId!==touch.id||slider.disabled)return;
+    if(!touch.axis){
+      direction(event);
+      if(touch.axis==='x')begin(event);
+    }
+    if(touch.axis==='x'){event.preventDefault();update(event);}
+  };
+  slider.onpointerup=event=>{
+    if(event?.pointerType!=='touch'){handlers.pointerup?.(event);return;}
+    if(!touch||event.pointerId!==touch.id)return;
+    const adjusting=touch.axis==='x';direction(event);
+    if(touch.axis!=='y'&&!slider.disabled){
+      if(!adjusting)begin(event);
+      update(event);handlers.change?.(event);
+    }
+    touch=null;
+  };
+  slider.onpointercancel=event=>{
+    if(event?.pointerType!=='touch'){handlers.pointercancel?.(event);return;}
+    if(!touch||event.pointerId!==touch.id)return;
+    const adjusting=touch.axis==='x';touch=null;
+    // Native scrolling cancels pending touch without rendering or sending.
+    if(adjusting)handlers.pointercancel?.(event);
+  };
+  for(const name of ['input','change'])slider['on'+name]=event=>{
+    if(touch){slider.value=touch.value;return;}
+    handlers[name]?.(event);
+  };
+  slider.onblur=event=>{touch=null;handlers.blur?.(event);};
+}
+
 function createLevelControl({active,start,send,render,refresh,failed}){
   const wanted=new Map(),queued=new Map();
   let generation=0,running=null,timer;

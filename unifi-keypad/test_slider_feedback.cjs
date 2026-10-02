@@ -8,7 +8,7 @@ function harness(provider){
     append(...items){for(const n of items){n.parent=this;this.children.push(n)}},
     remove(){if(this.parent)this.parent.children=this.parent.children.filter(n=>n!==this)},
     get textContent(){return content},set textContent(v){content=v;this.children=[]},
-    focus(){},showModal(){this.open=true},close(){this.open=false},querySelectorAll(){return []}};}
+    focus(){},getBoundingClientRect(){return {left:0,width:222}},showModal(){this.open=true},close(){this.open=false},querySelectorAll(){return []}};}
   const el=id=>{if(!nodes.has(id))nodes.set(id,node());return nodes.get(id)};
   const zone={id:'a',groupId:'a',name:'Living room',playback:'playing',title:'Music',source:'AirPlay',volume:40,muted:false,transportActions:['play','pause','stop'],groupRooms:['Living room']};
   const lamp={id:'a',name:'Sofa lamp',on:true,brightness:40,reachable:true,dimmable:true};
@@ -35,6 +35,7 @@ function harness(provider){
   run(fs.readFileSync('level-control.js','utf8'));
   run(fs.readFileSync(provider+'.js','utf8'));
   const slider=()=>provider==='audio'?el('audio-volume-slider'):run("lightingCards.get('a')?.slider");
+  if(provider==='audio')Object.assign(slider(),{min:'0',max:'100',step:'1'});
   const output=()=>provider==='audio'?el('audio-volume-value'):run("lightingCards.get('a').value");
   function frame(){if(slider())frames.push({value:slider().value,disabled:slider().disabled,label:output().textContent});}
   const render=provider==='audio'?'renderAudioControls':'renderLighting';
@@ -51,6 +52,48 @@ function harness(provider){
   };
 }
 (async()=>{
+  for(const provider of ['audio','lighting']){
+    const h=harness(provider);await flush();
+    const slider=h.slider();
+    const touch=(name,x,y,id=1)=>{
+      const event={pointerType:'touch',pointerId:id,isPrimary:true,clientX:x,clientY:y,defaultPrevented:false,
+        preventDefault(){this.defaultPrevented=true;}};
+      slider['onpointer'+name](event);return event;
+    };
+    h.frames.length=0;
+    assert.equal(touch('down',70,100).defaultPrevented,true,'Touch-down suppresses the native range jump');
+    assert.equal(slider.value,'40');
+    // Some browsers also emit native input while taking ownership of a range.
+    slider.value='90';slider.oninput();assert.equal(slider.value,'40');
+    assert.equal(touch('move',73,150).defaultPrevented,false,'Vertical movement remains available to native scrolling');
+    touch('cancel',73,150);await h.advance(200);
+    assert.equal(h.controls.length,0,'The first vertical swipe never changes a device');
+    assert.equal(h.frames.length,0,'Starting to scroll cannot disable/dim/redraw all controls');
+    // A release with a coalesced move is also a scroll, not a tap.
+    touch('down',80,100);touch('up',81,170);await h.advance(200);
+    assert.equal(h.controls.length,0);assert.equal(h.frames.length,0);
+    // Cancelling before an axis is known (browser starts panning) is inert.
+    touch('down',70,100);touch('cancel',73,108);
+    assert.equal(h.frames.length,0);
+    // A horizontal drag still updates immediately and sends before release.
+    touch('down',70,100);touch('move',131,103);
+    assert.equal(slider.value,'60');assert.equal(h.output().textContent,'60%');
+    await h.advance(150);assert.equal(h.controls.length,1);
+    touch('move',171,104);touch('up',171,104);
+    assert.equal(slider.value,'80');assert.equal(slider.disabled,false);
+    h.controls[0].finish();await flush();await h.advance(150);
+    h.controls[1].finish();await flush();assert.equal(slider.value,'80');
+    // Tap-to-set happens on release, never before we know it was not a scroll.
+    touch('down',31,100);assert.equal(slider.value,'80');
+    touch('up',31,100);assert.equal(slider.value,'10');
+    h.controls.at(-1).finish();await flush();
+    const count=h.controls.length;
+    touch('down',31,100);touch('move',51,101);touch('cancel',51,101);
+    await h.advance(200);assert.equal(h.controls.length,count,'A cancelled drag drops its unsent value');
+    assert.equal(slider.value,'10');
+    slider.disabled=true;touch('down',100,100);touch('up',100,100);
+    assert.equal(h.controls.length,count,'Disabled sliders never accept touch');
+  }
   for(const provider of ['audio','lighting']){
     const h=harness(provider);await flush();
     assert.equal(h.slider().value,'40');
