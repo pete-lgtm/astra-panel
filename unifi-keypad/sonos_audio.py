@@ -153,7 +153,7 @@ def exchange(ip, nets, action, definition, writing=False):
 def control_request(ip, nets, action, setting=None):
     """No URI, grouping, queue or arbitrary service/path writes are accepted."""
     service, args = 'AVTransport', '<InstanceID>0</InstanceID>'
-    if action in ('play', 'pause', 'stop') and setting is None:
+    if action in ('play', 'pause', 'stop', 'next') and setting is None:
         soap_action = action.capitalize()
         if action == 'play':
             args += '<Speed>1</Speed>'
@@ -341,7 +341,7 @@ def transport_actions(player, nets):
     try:
         raw = value(request(player['ip'], nets, 'GetCurrentTransportActions'), 'Actions')
         return sorted({a.strip().split('_')[-1].lower() for a in raw.split(',')
-                       if a.strip().split('_')[-1] in ('Play', 'Pause', 'Stop')})
+                       if a.strip().split('_')[-1] in ('Play', 'Pause', 'Stop', 'Next')})
     except ValueError:
         return []
 
@@ -417,7 +417,7 @@ class AudioInventory:
         room_id, group_id, action = data.get('roomId'), data.get('groupId'), data.get('action')
         if not all(isinstance(v, str) and IDENTIFIER.fullmatch(v) for v in (room_id, group_id)):
             raise ValueError('Refresh and select a Sonos room.')
-        if action not in ('play', 'pause', 'stop', 'volume', 'volume_up', 'volume_down', 'mute'):
+        if action not in ('play', 'pause', 'stop', 'next', 'volume', 'volume_up', 'volume_down', 'mute'):
             raise ValueError('Unsupported Sonos control.')
         extras = set(data) - {'roomId', 'groupId', 'action'}
         if extras != ({'volume'} if action == 'volume' else {'muted'} if action == 'mute' else set()):
@@ -441,7 +441,7 @@ class AudioInventory:
             group = next((g for g in groups if any(m['id'] == room_id and m['visible'] for m in g['members'])), None)
             if not group or group['id'] != group_id:
                 raise ValueError('The Sonos group changed. Refresh before trying again.')
-            if action in ('play', 'pause', 'stop'):
+            if action in ('play', 'pause', 'stop', 'next'):
                 target = next(m for m in group['members'] if m['id'] == group_id)
                 info = playback(target, nets)
                 if action not in info.get('transportActions', []):

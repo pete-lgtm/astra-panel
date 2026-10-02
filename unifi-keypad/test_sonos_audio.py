@@ -160,7 +160,7 @@ class AudioTests(unittest.TestCase):
                 result = audio.playback({'id': A, 'ip': '192.168.0.27'}, NETS)
                 self.assertEqual((result['source'], result['title'], result['artist']), (source, 'A song', 'An artist'))
                 self.assertTrue(result['_artwork'])
-                self.assertEqual(result['transportActions'], ['pause', 'play', 'stop'])
+                self.assertEqual(result['transportActions'], ['next', 'pause', 'play', 'stop'])
 
     def test_volume_and_mute_failures_do_not_hide_playback(self):
         with patch.object(audio, 'request', side_effect=[description(), audio.xml('<r><CurrentVolume>57</CurrentVolume></r>'),
@@ -174,16 +174,16 @@ class AudioTests(unittest.TestCase):
         authorized = []
         with patch.object(audio, 'interfaces', return_value=[ipaddress.ip_interface('192.168.0.21/24')]), \
                 patch.object(audio, 'identity', return_value={'id': B}), patch.object(audio, 'request', return_value=groups()), \
-                patch.object(audio, 'playback', return_value={'transportActions': ['play', 'pause', 'stop']}), \
+                patch.object(audio, 'playback', return_value={'transportActions': ['play', 'pause', 'stop', 'next']}), \
                 patch.object(audio, 'room_levels', return_value={'volume': 57, 'muted': False, 'fixedVolume': False}), \
                 patch.object(audio, 'control_request') as write:
             for action, extras, target, setting in [('pause', {}, '192.168.0.27', None), ('play', {}, '192.168.0.27', None),
-                 ('stop', {}, '192.168.0.27', None), ('volume_down', {}, '192.168.0.28', None),
+                 ('stop', {}, '192.168.0.27', None), ('next', {}, '192.168.0.27', None), ('volume_down', {}, '192.168.0.28', None),
                  ('volume', {'volume': 52}, '192.168.0.28', 52), ('mute', {'muted': True}, '192.168.0.28', True)]:
                 result = reader.control({'roomId': B, 'groupId': A, 'action': action, **extras}, lambda: authorized.append(True))
                 self.assertTrue(result['accepted'])
                 self.assertEqual(write.call_args.args, (target, NETS, action, setting))
-            self.assertEqual(len(authorized), 12)
+            self.assertEqual(len(authorized), 14)
 
     def test_control_rejects_unknown_rooms_changed_groups_and_unsupported_source(self):
         reader = audio.AudioInventory()
@@ -230,12 +230,13 @@ class AudioTests(unittest.TestCase):
                     ('play', None, 'Play', '<InstanceID>0</InstanceID><Speed>1</Speed>'),
                     ('pause', None, 'Pause', '<InstanceID>0</InstanceID>'),
                     ('stop', None, 'Stop', '<InstanceID>0</InstanceID>'),
+                    ('next', None, 'Next', '<InstanceID>0</InstanceID>'),
                     ('volume_up', None, 'SetRelativeVolume', '<InstanceID>0</InstanceID><Channel>Master</Channel><Adjustment>2</Adjustment>'),
                     ('volume', 54, 'SetVolume', '<InstanceID>0</InstanceID><Channel>Master</Channel><DesiredVolume>54</DesiredVolume>'),
                     ('mute', True, 'SetMute', '<InstanceID>0</InstanceID><Channel>Master</Channel><DesiredMute>1</DesiredMute>')):
                 audio.control_request('192.168.0.27', NETS, action, setting)
                 call = exchange.call_args
-                service = 'AVTransport' if action in ('play', 'pause', 'stop') else 'RenderingControl'
+                service = 'AVTransport' if action in ('play', 'pause', 'stop', 'next') else 'RenderingControl'
                 self.assertEqual(call.args, ('192.168.0.27', NETS, soap, (service, '/MediaRenderer/'+service+'/Control', args)))
                 self.assertTrue(call.kwargs['writing'])
             before = exchange.call_count

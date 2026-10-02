@@ -68,6 +68,7 @@ function show(screen) {
   renderPresentation();
   if(typeof syncAudioScreen==='function')syncAudioScreen();
   if(typeof syncLightingScreen==='function')syncLightingScreen();
+  if(typeof syncStandbyAudio==='function')syncStandbyAudio();
 }
 function availableHubPages() { return ['home',...(hubCameras.length ? ['cameras'] : []),'systems','audio','lighting']; }
 function renderHubNavigation() {
@@ -914,7 +915,7 @@ el('pin-setup').onsubmit=async event=>{
   event.preventDefault();const pin=el('new-pin').value;el('new-pin').value='';
   try{await call('/pin/setup',{pin});pinConfigured=true;await refresh();lock();message('PIN saved. Swipe up to unlock.');}catch(error){message(error.message);}
 };
-function clock(){const now=new Date();el('clock').textContent=now.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'});el('date').textContent=now.toLocaleDateString([],{weekday:'long',month:'long',day:'numeric'});}
+function clock(){const now=new Date(),stamp=now.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'});el('clock').textContent=stamp;el('clock').dataset.longTime=String(stamp.replace(/\s/g,'').length>=7);el('date').textContent=now.toLocaleDateString([],{weekday:'long',month:'long',day:'numeric'});}
 clock();setInterval(clock,1000);
 fetch('/session').then(r=>r.json()).then(async data=>{
   if(el('installer-link')) el('installer-link').hidden=!data.installerAvailable;
@@ -1112,6 +1113,7 @@ function renderPresentation() {
   text('state', labels[view.mode] || 'Status unverified');
   text('sleep-state', labels[view.mode] || 'Status unverified');
   el('standby-display').hidden = urgent;
+  if(typeof syncStandbyAudio==='function')syncStandbyAudio();
   el('alarm-display').hidden = !urgent;
   el('countdown-face').hidden = !counting;
   el('breach-display').hidden = view.mode !== 'breach';
@@ -1291,7 +1293,8 @@ document.addEventListener('phone-api-connected',()=>{refresh();message('Console 
     const pulse=reduced.matches?0:Math.max(0,1-(seconds-touched)/2);
     const r=radius*(1+.035*Math.sin(seconds*.8)+pulse*.035);
     context.setTransform(scale,0,0,scale,0,0);context.clearRect(0,0,width,height);
-    const glow=context.createRadialGradient(cx,cy,r*.28,cx,cy,r*1.3);
+    const glowEdge=Math.max(r*.3,Math.min(r*1.3,cx-4,width-cx-4,cy-4,height-cy-4));
+    const glow=context.createRadialGradient(cx,cy,r*.28,cx,cy,glowEdge);
     glow.addColorStop(0,`hsla(${hue},95%,65%,0)`);
     glow.addColorStop(.55,`hsla(${hue},95%,65%,.035)`);
     glow.addColorStop(.74,`hsla(${hue+30},95%,68%,.13)`);
@@ -1341,15 +1344,19 @@ document.addEventListener('phone-api-connected',()=>{refresh();message('Console 
     previousTone=tone;
   }
   function resize(){
-    const box=screen.getBoundingClientRect(),clockBox=time.getBoundingClientRect(),statusBox=status.getBoundingClientRect();
+    const box=screen.getBoundingClientRect(),clockBox=time.getBoundingClientRect(),displayBox=display.getBoundingClientRect();
+    const playerBox=el('standby-music')?.getBoundingClientRect();
+    const music=screen.dataset.music==='true'&&playerBox?.height>0;
     width=box.width;height=box.height;scale=Math.min(devicePixelRatio||1,1.25);
     canvas.width=Math.max(1,Math.round(width*scale));canvas.height=Math.max(1,Math.round(height*scale));
-    const clockCenter=clockBox.top+clockBox.height/2,statusCenter=statusBox.top+statusBox.height/2;
-    // Lower the light toward the status badge without moving text or touch targets.
-    cx=width/2;cy=clockCenter*.4+statusCenter*.6-box.top;
-    // Breathing + touch can expand by 7%; the glow reaches 1.3× that radius.
-    // Reserve the entire 1.4× envelope plus padding on all four edges.
-    radius=Math.max(0,Math.min(width*.34,(Math.min(cx,width-cx,cy,height-cy)-8)/1.4,230));
+    const clockCenter=clockBox.top+clockBox.height/2;
+    // Music centers the clock group beside the complete artwork card.
+    cx=clockBox.left+clockBox.width/2-box.left;
+    cy=music?playerBox.top+playerBox.height/2-box.top:clockCenter-box.top;
+    // Reserve the full breathing/orbit envelope. The diffuse glow fades to
+    // transparent before the canvas edge rather than forcing a tiny ring.
+    const targetRadius=music?Math.min(displayBox.width*.45,playerBox.height*.341):displayBox.height*.43;
+    radius=Math.max(0,Math.min(targetRadius,(Math.min(cx,width-cx,cy,height-cy)-12)/1.24,230));
     if(visible())draw((performance.now()-started)/1000);
     sync();
   }
@@ -1357,7 +1364,7 @@ document.addEventListener('phone-api-connected',()=>{refresh();message('Console 
   observer.observe(document.body,{attributes:true,attributeFilter:['data-screen','data-tone']});
   observer.observe(display,{attributes:true,attributeFilter:['hidden']});
   if(typeof ResizeObserver==='function'){
-    const sizes=new ResizeObserver(resize);sizes.observe(screen);sizes.observe(display);
+    const sizes=new ResizeObserver(resize);sizes.observe(screen);sizes.observe(display);if(el('standby-music'))sizes.observe(el('standby-music'));
   }
   addEventListener('resize',resize);document.addEventListener('visibilitychange',sync);
   reduced.addEventListener('change',()=>{previousTone='';stop();resize();});

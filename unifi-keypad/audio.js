@@ -71,6 +71,7 @@ function loadAudioArtwork(){
   renderAudioArtwork();pumpAudioArtwork();
 }
 function clearAudioHub(){
+  if(typeof rememberStandbyRoom==='function')rememberStandbyRoom(audioSelected);
   audioLevels.reset();
   closeAudioGrouping();
   clearTimeout(audioTimer);audioGeneration++;audioLoading=false;audioGrant='';audioData=null;audioSelected='';
@@ -102,6 +103,8 @@ function renderAudioControls(){
   el('audio-play-pause').disabled=!usable||!actions.includes(verb);
   text('audio-play-label',audioControlBusy?'Updating…':playing?'Pause':'Play');text('audio-play-symbol',playing?'Ⅱ':'▶');
   el('audio-play-pause').setAttribute('aria-label',(playing?'Pause ':'Play ')+(zone?.name||'room')+(zone?.groupRooms?.length>1?' group':''));
+  el('audio-next').hidden=!actions.includes('next');
+  el('audio-next').disabled=!usable||!actions.includes('next');
   el('audio-stop').disabled=!usable||!actions.includes('stop');
   el('audio-stop').setAttribute('aria-label','Stop '+(zone?.name||'room')+(zone?.groupRooms?.length>1?' group':''));
   el('audio-mute').disabled=!usable||typeof zone?.muted!=='boolean';
@@ -259,8 +262,8 @@ function renderAudio(){
   el('audio-now-state').dataset.playback=zone.playback;
   text('audio-source',zone.source||'Sonos');
   text('audio-art-symbol',zone.source==='TV'?'▣':zone.source==='Line-in'?'↗':'♪');
-  text('audio-track-title',audioTrackTitle(zone));
-  text('audio-track-artist',zone.playback==='offline'?'Check its power and network connection.':zone.artist||'');
+  musicText('audio-track-title',audioTrackTitle(zone));
+  musicText('audio-track-artist',zone.playback==='offline'?'Check its power and network connection.':zone.artist||'');
   text('audio-track-album',zone.album||'');
   text('audio-room-name',zone.name);
   text('audio-group-detail',zone.groupMembers?.length>1?'Linked with '+zone.groupMembers.filter(m=>m.id!==zone.id).map(m=>m.name).join(' · '):zone.groupRooms?.length>1?'Linked with '+zone.groupRooms.filter(n=>n!==zone.name).join(' · '):zone.model||'Sonos');
@@ -296,6 +299,7 @@ function requestAudioLevel(value){
 }
 el('audio-discover').onclick=()=>{activity();audioControlNotice='';loadAudio(true);};
 el('audio-play-pause').onclick=()=>{const z=audioData?.zones?.find(z=>z.id===audioSelected);if(!el('audio-play-pause').disabled)controlAudio(z?.playback==='playing'?'pause':'play');};
+el('audio-next').onclick=()=>{if(!el('audio-next').disabled)controlAudio('next');};
 el('audio-stop').onclick=()=>{if(!el('audio-stop').disabled)controlAudio('stop');};
 el('audio-mute').onclick=()=>{const z=audioData?.zones?.find(z=>z.id===audioSelected);if(!el('audio-mute').disabled)controlAudio('mute',{muted:!z.muted});};
 el('audio-volume-down').onclick=()=>{if(!el('audio-volume-down').disabled){requestAudioLevel(Math.max(0,Number(el('audio-volume-slider').value)-2));audioLevels.flush();}};
@@ -313,3 +317,23 @@ el('audio-group-close').onclick=()=>{if(!audioControlBusy){activity();closeAudio
 el('audio-group-dialog').oncancel=event=>{if(audioControlBusy)event.preventDefault();else closeAudioGrouping();};
 document.addEventListener('visibilitychange',()=>syncAudioScreen());
 syncAudioScreen();
+
+// Keep text nodes and animations stable across status polls. Scroll only overflow.
+function musicText(id,value){
+  const node=el(id);value=String(value||'');
+  if(!document.createElement||typeof requestAnimationFrame!=='function'){text(id,value);return;}
+  if(node._musicText!==value){
+    node._musicText=value;node.textContent='';
+    const span=document.createElement('span');span.className='music-text-run';span.textContent=value;node.append(span);
+    node.dataset.scrolling='false';node.title=value;node.setAttribute('aria-label',value);
+  }
+  const measure=()=>{
+    const span=node.firstElementChild;if(!span||node.hidden)return;
+    const travel=Math.max(0,span.scrollWidth-node.clientWidth);
+    node.style.setProperty('--music-travel',`-${travel}px`);
+    node.style.setProperty('--music-duration',`${Math.max(10,travel/23+5)}s`);
+    node.dataset.scrolling=String(travel>8);
+  };
+  requestAnimationFrame(measure);
+  if(typeof ResizeObserver==='function'&&!node._musicResize){node._musicResize=new ResizeObserver(measure);node._musicResize.observe(node);}
+}

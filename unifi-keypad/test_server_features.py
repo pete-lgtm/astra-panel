@@ -139,6 +139,20 @@ class WebhookCommandTest(unittest.TestCase):
         events = self.store.history()['events']
         return events[0]
 
+    def test_music_grant_cannot_unlock_alarm_or_settings(self):
+        from standby_audio import StandbyAudio
+        from unittest.mock import Mock, patch
+        inventory = Mock()
+        inventory.read.return_value = {'zones': [{'id': 'room-a', 'groupId': 'room-a', 'source': 'Music', 'playback': 'playing'}]}
+        music = StandbyAudio(inventory).read({})['mediaToken']
+        with self.assertRaises(ValueError): server.unlocked_user(music)
+        with self.assertRaises(ValueError): server.webhook_command('disarm', {'unlock': music, 'confirm': True})
+        self.assertEqual(self.calls, [])
+        self.assertEqual(server.UNLOCKS, {})
+        with patch.object(server.SETTINGS_ACCESS, 'saved_pin', return_value={'configured': True}):
+            with self.assertRaises(server.SettingsLocked):
+                server.SETTINGS_ACCESS.require({'Cookie': server.SETTINGS_ACCESS.cookie_name + '=' + music})
+
     def test_duress_disarm_fires_panic_silently(self):
         token = self.unlock_with('9999')  # duress PIN
         result = server.webhook_command('disarm', {'unlock': token, 'confirm': True})
