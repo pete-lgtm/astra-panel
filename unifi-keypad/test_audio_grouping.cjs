@@ -25,6 +25,7 @@ const run=s=>vm.runInContext(s,ctx),flush=()=>new Promise(resolve=>setImmediate(
 const writes=()=>requests.filter(r=>r.path==='/hub/audio/group');
 const option=name=>el('audio-group-options').children.find(row=>row.children[0]['aria-label']===name)?.children[0];
 const toggle=(name,checked)=>{const input=option(name);assert.ok(input,name);input.checked=checked;input.onchange();};
+run(fs.readFileSync('level-control.js','utf8'));
 run(fs.readFileSync('audio.js','utf8'));
 (async()=>{
  await flush();assert.equal(el('audio-link-rooms').disabled,false);

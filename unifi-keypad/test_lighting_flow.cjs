@@ -37,6 +37,7 @@ const ctx=vm.createContext({Map,Set,Number,document:{hidden:false,addEventListen
  }
 });
 const run=s=>vm.runInContext(s,ctx),flush=()=>new Promise(resolve=>setImmediate(resolve));
+run(fs.readFileSync('level-control.js','utf8'));
 run(fs.readFileSync('lighting.js','utf8'));
 const writes=()=>requests.filter(r=>r.path.endsWith('/control'));
 (async()=>{

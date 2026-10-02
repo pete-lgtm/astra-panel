@@ -33,6 +33,7 @@ const ctx=vm.createContext({Map,document:{hidden:false,addEventListener(){}},el,
 });
 const run=s=>vm.runInContext(s,ctx),flush=()=>new Promise(resolve=>setImmediate(resolve));
 const writes=()=>requests.filter(r=>r.path==='/hub/audio/control');
+run(fs.readFileSync('level-control.js','utf8'));
 run(fs.readFileSync('audio.js','utf8'));
 (async()=>{
   await flush();
