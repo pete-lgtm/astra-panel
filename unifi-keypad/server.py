@@ -986,6 +986,7 @@ class Handler(BaseHTTPRequestHandler):
         files['/level-control.js'] = ('level-control.js', 'text/javascript')
         files['/audio.js'] = ('audio.js', 'text/javascript')
         files['/standby-audio.js'] = ('standby-audio.js', 'text/javascript')
+        files['/countdown-sound.js'] = ('countdown-sound.js', 'text/javascript')
         files['/music.css'] = ('music.css', 'text/css')
         files['/lighting.js'] = ('lighting.js', 'text/javascript')
         files['/lighting.css'] = ('lighting.css', 'text/css')

@@ -4,5 +4,6 @@
   "DeveloperToolsAvailability": 2,
   "PrintingEnabled": false,
   "DownloadRestrictions": 3,
-  "DefaultNotificationsSetting": 2
+  "DefaultNotificationsSetting": 2,
+  "AutoplayAllowlist": ["http://127.0.0.1:8764", "http://127.0.0.1:8765"]
 }

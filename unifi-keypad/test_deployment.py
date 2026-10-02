@@ -191,6 +191,30 @@ class DeploymentTests(unittest.TestCase):
 
 
 class DeviceConfigTests(unittest.TestCase):
+    def test_countdown_sound_asset_and_kiosk_permission(self):
+        httpd = server.ThreadingHTTPServer(('127.0.0.1', 0), server.Handler)
+        thread = threading.Thread(target=httpd.serve_forever, daemon=True)
+        thread.start()
+        try:
+            connection = http.client.HTTPConnection('127.0.0.1', httpd.server_port)
+            connection.request('GET', '/countdown-sound.js', headers={'Host': f'127.0.0.1:{server.PORT}'})
+            response = connection.getresponse()
+            self.assertEqual(response.status, 200)
+            self.assertEqual(response.read(), (ROOT / 'countdown-sound.js').read_bytes())
+            connection.request('GET', '/countdown-sound.js', headers={'Host': 'untrusted.example'})
+            response = connection.getresponse()
+            self.assertEqual(response.status, 403)
+            response.read()
+            connection.close()
+        finally:
+            httpd.shutdown()
+            httpd.server_close()
+            thread.join()
+        policy = json.loads((ROOT / 'deploy/pi/chromium-policy.json').read_text())
+        self.assertEqual(policy['AutoplayAllowlist'], ['http://127.0.0.1:8764', 'http://127.0.0.1:8765'])
+        self.assertNotIn('AutoplayAllowed', policy)
+        self.assertIn('allow="autoplay http://127.0.0.1:8765"', (ROOT / 'deploy/kiosk/index.html').read_text())
+
     def test_root_opens_setup_until_site_and_pin_are_saved(self):
         httpd = server.ThreadingHTTPServer(('127.0.0.1', 0), server.Handler)
         thread = threading.Thread(target=httpd.serve_forever, daemon=True)

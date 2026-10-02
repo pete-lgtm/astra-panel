@@ -112,6 +112,22 @@ supplies the native exit countdown. The local controller delays the configured
 phone alert and optional siren after an entry event; Protect may record a native
 breach immediately. Confirmed disarm cancels the pending local alert.
 
+The local panel plays short beeps during the displayed exit and entry countdowns,
+including while a PIN is being entered. Beeps occur once per second and twice
+per second for the final ten seconds. They stop when the countdown ends or
+Protect confirms disarm; an accepted request alone does not silence the timer.
+Settings → Panel → Test sound plays a short local cue without arming the alarm.
+These cues do not use Sonos or replace the configured alarm siren.
+
+A connected audio speaker is required. Raspberry Pi 5 has no built-in speaker;
+a USB audio speaker is a simple option. Use a speaker that carries audio over
+USB, not a speaker that only takes power from USB and needs a separate audio
+jack. The kiosk installer allows autoplay only on its two local panel origins
+and delegates that permission to the panel frame, so entry beeps can start after
+a reboot before anyone touches the screen. Existing installations also need
+the updated kiosk wrapper and Chromium policy; an application-only update is
+not sufficient. Verify the chosen audio output and audible level on the device.
+
 The controller journals entry deadlines and delivery intent. Restart recovery
 re-checks Protect, saved sensor checks and managed rules before resuming. Unknown
 or ambiguous delivery is not automatically repeated. The panel cannot count

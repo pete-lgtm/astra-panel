@@ -26,7 +26,7 @@ APP_FILES = ('VERSION', 'server.py', 'device_config.py', 'credential_store.py', 
              'setup_lab.html', 'setup_lab.js', 'setup_lab.css',
              'browser_setup.py', 'browser_landing.html', 'browser_pair.html', 'browser_pair.js', 'browser_pair.css', 'browser_pair_ui.js', 'web_setup.css',
              'power_monitor.py', 'fleet_heartbeat.py', 'network_speedtest.py', 'sonos_audio.py', 'sonos_artwork.py', 'audio.js', 'standby_audio.py', 'standby-audio.js', 'music.css',
-             'hue_lighting.py', 'lighting.js', 'lighting.css', 'level-control.js')
+             'hue_lighting.py', 'lighting.js', 'lighting.css', 'level-control.js', 'countdown-sound.js')
 MAX_PACKAGE = 8_000_000
 MAX_FILE = 1_000_000
 
